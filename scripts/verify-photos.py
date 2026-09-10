@@ -1,0 +1,34 @@
+"""Validate every public derivative, metadata policy and traceability."""
+from pathlib import Path
+import json, hashlib
+from PIL import Image
+
+photos=json.loads(Path('data/gallery.json').read_text(encoding='utf8'))
+plan=json.loads(Path('scripts/crop-plan.json').read_text(encoding='utf8'))
+source_ids={r['id'] for r in plan if r.get('reviewed')}
+errors=[];references=set();hashes={};sizes=[]
+for p in photos:
+    if int(p['sourceRef'].split('-')[0]) not in source_ids: errors.append('Unreviewed source: '+p['id'])
+    if not p['alt'] or p['width']<=0 or p['height']<=0: errors.append('Invalid photo: '+p['id'])
+    for v in p['versions']:
+        path=Path('public'+v['src']);references.add(path.resolve())
+        if not path.is_file():errors.append('Missing '+str(path));continue
+        with Image.open(path) as im:
+            im.load()
+            if im.size!=(v['width'],v['height']):errors.append('Dimensions '+str(path))
+            if im.getexif() or im.info.get('exif') or im.info.get('xmp'):errors.append('Metadata '+str(path))
+            if im.width>p['width'] or im.height>p['height']:errors.append('Upscaled '+str(path))
+        sizes.append(path.stat().st_size)
+    last=Path('public'+p['versions'][-1]['src']);digest=hashlib.sha256(last.read_bytes()).hexdigest()
+    if digest in hashes:errors.append('Identical public image '+p['id']+' / '+hashes[digest])
+    hashes[digest]=p['id']
+actual={p.resolve() for p in Path('public/photos').glob('*') if p.is_file()}
+if actual-references:errors.append(f'{len(actual-references)} unreferenced derivatives')
+for path in Path('public/brand').glob('*'):
+    if path.suffix in ('.jpg','.webp','.png'):
+        with Image.open(path) as im:
+            if im.getexif() or im.info.get('exif') or im.info.get('xmp'):errors.append('Brand metadata '+str(path))
+result=dict(photos=len(photos),derivatives=len(references),bytes=sum(sizes),errors=errors)
+Path('data/verification.json').write_text(json.dumps(result,indent=2),encoding='utf8')
+print(json.dumps(result,ensure_ascii=False))
+raise SystemExit(bool(errors))

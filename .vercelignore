@@ -1,0 +1,11 @@
+private-audit
+output
+.playwright-cli
+.render
+scripts/*.py
+scripts/crop-plan.json
+scripts/visual-duplicates.json
+scripts/photo-exclusions.json
+tests
+README.md
+node_modules

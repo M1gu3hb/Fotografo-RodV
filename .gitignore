@@ -4,3 +4,14 @@ dist
 .vercel
 *.zip
 workspace-source
+private-audit/
+scripts/crop-plan.json
+.render/
+*.tsbuildinfo
+output/
+.playwright-cli/
+__pycache__/
+*.pyc
+originals/
+.env*
+!.env.example

@@ -1,0 +1,538 @@
+{
+  "026-00": {
+    "duplicateOf": "023-00",
+    "correlation": 0.9971
+  },
+  "014-00": {
+    "duplicateOf": "028-00",
+    "correlation": 0.9985
+  },
+  "016-00": {
+    "duplicateOf": "006-00",
+    "correlation": 0.99975
+  },
+  "019-00": {
+    "duplicateOf": "018-00",
+    "correlation": 1.0
+  },
+  "111-00": {
+    "duplicateOf": "005-00",
+    "correlation": 1.0
+  },
+  "112-00": {
+    "duplicateOf": "010-00",
+    "correlation": 1.0
+  },
+  "113-01": {
+    "duplicateOf": "025-00",
+    "correlation": 0.99482
+  },
+  "315-00": {
+    "duplicateOf": "041-00",
+    "correlation": 0.99955
+  },
+  "062-00": {
+    "duplicateOf": "003-00",
+    "correlation": 0.97845
+  },
+  "305-00": {
+    "duplicateOf": "037-00",
+    "correlation": 0.99971
+  },
+  "093-00": {
+    "duplicateOf": "122-09",
+    "correlation": 0.99785
+  },
+  "310-02": {
+    "duplicateOf": "039-02",
+    "correlation": 0.99975
+  },
+  "302-02": {
+    "duplicateOf": "040-02",
+    "correlation": 0.99973
+  },
+  "313-00": {
+    "duplicateOf": "263-00",
+    "correlation": 0.99396
+  },
+  "267-00": {
+    "duplicateOf": "266-00",
+    "correlation": 0.98317
+  },
+  "267-02": {
+    "duplicateOf": "266-02",
+    "correlation": 0.993
+  },
+  "302-01": {
+    "duplicateOf": "040-01",
+    "correlation": 0.99953
+  },
+  "310-01": {
+    "duplicateOf": "039-01",
+    "correlation": 0.99981
+  },
+  "302-00": {
+    "duplicateOf": "040-00",
+    "correlation": 0.99957
+  },
+  "310-00": {
+    "duplicateOf": "039-00",
+    "correlation": 0.99953
+  },
+  "267-01": {
+    "duplicateOf": "266-01",
+    "correlation": 0.99465
+  },
+  "308-00": {
+    "duplicateOf": "038-00",
+    "correlation": 0.9995
+  },
+  "305-01": {
+    "duplicateOf": "037-01",
+    "correlation": 0.99961
+  },
+  "305-02": {
+    "duplicateOf": "037-02",
+    "correlation": 0.99971
+  },
+  "301-02": {
+    "duplicateOf": "032-00",
+    "correlation": 0.98571
+  },
+  "308-02": {
+    "duplicateOf": "038-02",
+    "correlation": 0.99965
+  },
+  "308-03": {
+    "duplicateOf": "038-03",
+    "correlation": 0.99952
+  },
+  "117-00": {
+    "duplicateOf": "088-00",
+    "correlation": 0.99369
+  },
+  "308-01": {
+    "duplicateOf": "038-01",
+    "correlation": 0.99962
+  },
+  "304-03": {
+    "duplicateOf": "316-00",
+    "correlation": 0.98902
+  },
+  "317-02": {
+    "duplicateOf": "266-01",
+    "correlation": 0.9857
+  },
+  "309-01": {
+    "duplicateOf": "306-00",
+    "correlation": 0.98997
+  },
+  "119-01": {
+    "duplicateOf": "090-03",
+    "correlation": 0.99398
+  },
+  "120-00": {
+    "duplicateOf": "091-01",
+    "correlation": 0.99453
+  },
+  "120-06": {
+    "duplicateOf": "091-07",
+    "correlation": 0.99687
+  },
+  "116-00": {
+    "duplicateOf": "087-00",
+    "correlation": 0.99762
+  },
+  "116-05": {
+    "duplicateOf": "087-03",
+    "correlation": 0.99775
+  },
+  "116-06": {
+    "duplicateOf": "200-02",
+    "correlation": 0.98429
+  },
+  "089-05": {
+    "duplicateOf": "203-01",
+    "correlation": 0.998
+  },
+  "202-08": {
+    "duplicateOf": "089-01",
+    "correlation": 0.99622
+  },
+  "202-03": {
+    "duplicateOf": "089-03",
+    "correlation": 0.99463
+  },
+  "202-09": {
+    "duplicateOf": "089-02",
+    "correlation": 0.99538
+  },
+  "081-00": {
+    "duplicateOf": "114-02",
+    "correlation": 0.99558
+  },
+  "081-01": {
+    "duplicateOf": "114-03",
+    "correlation": 0.99095
+  },
+  "114-06": {
+    "duplicateOf": "196-06",
+    "correlation": 0.98382
+  },
+  "081-02": {
+    "duplicateOf": "196-06",
+    "correlation": 0.98387
+  },
+  "081-03": {
+    "duplicateOf": "114-07",
+    "correlation": 0.99522
+  },
+  "090-00": {
+    "duplicateOf": "186-01",
+    "correlation": 0.99432
+  },
+  "202-04": {
+    "duplicateOf": "089-00",
+    "correlation": 0.99586
+  },
+  "115-01": {
+    "duplicateOf": "198-06",
+    "correlation": 0.98756
+  },
+  "200-06": {
+    "duplicateOf": "116-03",
+    "correlation": 0.98487
+  },
+  "117-02": {
+    "duplicateOf": "089-07",
+    "correlation": 0.99649
+  },
+  "117-04": {
+    "duplicateOf": "089-03",
+    "correlation": 0.99471
+  },
+  "201-01": {
+    "duplicateOf": "088-00",
+    "correlation": 0.99609
+  },
+  "158-06": {
+    "duplicateOf": "158-09",
+    "correlation": 0.99711
+  },
+  "118-00": {
+    "duplicateOf": "089-00",
+    "correlation": 0.99705
+  },
+  "118-05": {
+    "duplicateOf": "089-04",
+    "correlation": 0.99772
+  },
+  "118-09": {
+    "duplicateOf": "203-00",
+    "correlation": 0.99672
+  },
+  "116-07": {
+    "duplicateOf": "201-00",
+    "correlation": 0.99722
+  },
+  "118-02": {
+    "duplicateOf": "089-02",
+    "correlation": 0.99718
+  },
+  "118-07": {
+    "duplicateOf": "089-06",
+    "correlation": 0.99567
+  },
+  "118-01": {
+    "duplicateOf": "089-01",
+    "correlation": 0.99652
+  },
+  "118-06": {
+    "duplicateOf": "203-01",
+    "correlation": 0.99797
+  },
+  "190-10": {
+    "duplicateOf": "122-09",
+    "correlation": 0.99804
+  },
+  "092-06": {
+    "duplicateOf": "190-08",
+    "correlation": 0.97972
+  },
+  "092-05": {
+    "duplicateOf": "190-01",
+    "correlation": 0.99712
+  },
+  "091-03": {
+    "duplicateOf": "187-00",
+    "correlation": 0.99482
+  },
+  "092-04": {
+    "duplicateOf": "189-01",
+    "correlation": 0.99678
+  },
+  "092-02": {
+    "duplicateOf": "189-06",
+    "correlation": 0.99616
+  },
+  "092-01": {
+    "duplicateOf": "189-02",
+    "correlation": 0.99867
+  },
+  "196-02": {
+    "duplicateOf": "114-07",
+    "correlation": 0.99346
+  },
+  "092-03": {
+    "duplicateOf": "189-07",
+    "correlation": 0.9966
+  },
+  "203-04": {
+    "duplicateOf": "118-04",
+    "correlation": 0.99655
+  },
+  "203-05": {
+    "duplicateOf": "089-04",
+    "correlation": 0.99785
+  },
+  "203-06": {
+    "duplicateOf": "118-03",
+    "correlation": 0.99544
+  },
+  "203-07": {
+    "duplicateOf": "118-08",
+    "correlation": 0.99628
+  },
+  "203-08": {
+    "duplicateOf": "089-06",
+    "correlation": 0.99638
+  },
+  "092-10": {
+    "duplicateOf": "092-03",
+    "correlation": 0.99683
+  },
+  "119-05": {
+    "duplicateOf": "091-00",
+    "correlation": 0.99783
+  },
+  "119-10": {
+    "duplicateOf": "091-06",
+    "correlation": 0.99685
+  },
+  "119-03": {
+    "duplicateOf": "186-01",
+    "correlation": 0.99455
+  },
+  "119-08": {
+    "duplicateOf": "090-07",
+    "correlation": 0.99553
+  },
+  "121-02": {
+    "duplicateOf": "189-02",
+    "correlation": 0.9986
+  },
+  "121-10": {
+    "duplicateOf": "190-01",
+    "correlation": 0.99625
+  },
+  "121-00": {
+    "duplicateOf": "092-00",
+    "correlation": 0.9976
+  },
+  "121-01": {
+    "duplicateOf": "092-07",
+    "correlation": 0.99712
+  },
+  "121-03": {
+    "duplicateOf": "189-06",
+    "correlation": 0.99617
+  },
+  "121-08": {
+    "duplicateOf": "189-01",
+    "correlation": 0.99596
+  },
+  "121-09": {
+    "duplicateOf": "189-08",
+    "correlation": 0.99672
+  },
+  "121-11": {
+    "duplicateOf": "190-08",
+    "correlation": 0.97975
+  },
+  "119-04": {
+    "duplicateOf": "090-01",
+    "correlation": 0.99476
+  },
+  "119-09": {
+    "duplicateOf": "090-08",
+    "correlation": 0.99662
+  },
+  "121-06": {
+    "duplicateOf": "189-07",
+    "correlation": 0.99658
+  },
+  "121-04": {
+    "duplicateOf": "092-08",
+    "correlation": 0.99627
+  },
+  "121-05": {
+    "duplicateOf": "189-00",
+    "correlation": 0.996
+  },
+  "121-07": {
+    "duplicateOf": "190-00",
+    "correlation": 0.99648
+  },
+  "114-01": {
+    "duplicateOf": "185-01",
+    "correlation": 0.97718
+  },
+  "319-08": {
+    "duplicateOf": "260-00",
+    "correlation": 0.9881
+  },
+  "117-01": {
+    "duplicateOf": "088-01",
+    "correlation": 0.99819
+  },
+  "117-08": {
+    "duplicateOf": "088-03",
+    "correlation": 0.99781
+  },
+  "318-04": {
+    "duplicateOf": "266-00",
+    "correlation": 0.97707
+  },
+  "088-06": {
+    "duplicateOf": "201-03",
+    "correlation": 0.99593
+  },
+  "088-04": {
+    "duplicateOf": "201-08",
+    "correlation": 0.99309
+  },
+  "117-03": {
+    "duplicateOf": "088-02",
+    "correlation": 0.9965
+  },
+  "318-02": {
+    "duplicateOf": "273-00",
+    "correlation": 0.98894
+  },
+  "120-02": {
+    "duplicateOf": "187-00",
+    "correlation": 0.99435
+  },
+  "120-09": {
+    "duplicateOf": "091-09",
+    "correlation": 0.99682
+  },
+  "120-01": {
+    "duplicateOf": "091-02",
+    "correlation": 0.9943
+  },
+  "120-08": {
+    "duplicateOf": "091-08",
+    "correlation": 0.99736
+  },
+  "120-05": {
+    "duplicateOf": "091-05",
+    "correlation": 0.99549
+  },
+  "120-04": {
+    "duplicateOf": "091-04",
+    "correlation": 0.99477
+  },
+  "198-03": {
+    "duplicateOf": "115-02",
+    "correlation": 0.99808
+  },
+  "153-07": {
+    "duplicateOf": "153-05",
+    "correlation": 0.99638
+  },
+  "115-03": {
+    "duplicateOf": "199-00",
+    "correlation": 0.99681
+  },
+  "119-02": {
+    "duplicateOf": "090-04",
+    "correlation": 0.99442
+  },
+  "119-07": {
+    "duplicateOf": "090-06",
+    "correlation": 0.99521
+  },
+  "119-00": {
+    "duplicateOf": "090-02",
+    "correlation": 0.9952
+  },
+  "119-11": {
+    "duplicateOf": "090-09",
+    "correlation": 0.99687
+  },
+  "122-02": {
+    "duplicateOf": "093-08",
+    "correlation": 0.99633
+  },
+  "122-00": {
+    "duplicateOf": "190-07",
+    "correlation": 0.99688
+  },
+  "119-06": {
+    "duplicateOf": "090-05",
+    "correlation": 0.99823
+  },
+  "122-05": {
+    "duplicateOf": "188-01",
+    "correlation": 0.99697
+  },
+  "093-05": {
+    "duplicateOf": "122-06",
+    "correlation": 0.99636
+  },
+  "093-07": {
+    "duplicateOf": "122-08",
+    "correlation": 0.99688
+  },
+  "122-03": {
+    "duplicateOf": "190-02",
+    "correlation": 0.98892
+  },
+  "093-01": {
+    "duplicateOf": "190-07",
+    "correlation": 0.99719
+  },
+  "093-02": {
+    "duplicateOf": "122-01",
+    "correlation": 0.9963
+  },
+  "093-06": {
+    "duplicateOf": "122-07",
+    "correlation": 0.99768
+  },
+  "122-04": {
+    "duplicateOf": "188-05",
+    "correlation": 0.99752
+  },
+  "093-03": {
+    "duplicateOf": "190-02",
+    "correlation": 0.98904
+  },
+  "093-04": {
+    "duplicateOf": "188-05",
+    "correlation": 0.99771
+  },
+  "117-07": {
+    "duplicateOf": "201-03",
+    "correlation": 0.99574
+  },
+  "117-05": {
+    "duplicateOf": "201-08",
+    "correlation": 0.99307
+  },
+  "117-06": {
+    "duplicateOf": "088-05",
+    "correlation": 0.99417
+  }
+}

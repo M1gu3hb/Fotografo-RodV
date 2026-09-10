@@ -1,14 +1,14 @@
 :root {
   font-family: "Manrope Variable", "Helvetica Neue", Arial, sans-serif;
   color: #11110f;
-  background: #f4f4f0;
+  background: #ffffff;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   --ink: #11110f;
-  --paper: #f4f4f0;
+  --paper: #ffffff;
   --white: #ffffff;
   --smoke: #d8d8d2;
-  --muted: #6e6e68;
+  --muted: #606068;
   --line: rgba(17, 17, 15, 0.18);
   --serif: "Cormorant Garamond Variable", Georgia, serif;
 }
