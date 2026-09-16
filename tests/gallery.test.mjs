@@ -30,6 +30,30 @@ test('gallery API builds a read-only, paginated Supabase request', async () => {
   assert.equal(url.searchParams.get('order'), 'sort_order.asc');
 });
 
+test('gallery API treats a Supabase range past the end as an empty page', async () => {
+  const previousFetch = globalThis.fetch;
+  const previousUrl = process.env.SUPABASE_URL;
+  const previousKey = process.env.SUPABASE_PUBLISHABLE_KEY;
+  process.env.SUPABASE_URL = 'https://example.supabase.co';
+  process.env.SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_test';
+  globalThis.fetch = async () => new Response(
+    JSON.stringify({ code: 'PGRST103', message: 'Requested range not satisfiable' }),
+    { status: 416, headers: { 'content-range': '*/13' } },
+  );
+  try {
+    const { default: handler } = await import('../api/gallery.mjs');
+    let status; let body;
+    const response = { setHeader() {}, status(value) { status = value; return this; }, json(value) { body = value; return this; } };
+    await handler({ method: 'GET', url: '/api/gallery?category=retratos&offset=24&limit=24' }, response);
+    assert.equal(status, 200);
+    assert.deepEqual(body, { items: [], total: 13, nextOffset: null });
+  } finally {
+    globalThis.fetch = previousFetch;
+    if (previousUrl === undefined) delete process.env.SUPABASE_URL; else process.env.SUPABASE_URL = previousUrl;
+    if (previousKey === undefined) delete process.env.SUPABASE_PUBLISHABLE_KEY; else process.env.SUPABASE_PUBLISHABLE_KEY = previousKey;
+  }
+});
+
 test('contact endpoint never accepts or pretends to send unconfigured inquiries', async () => {
   assert.ok(existsSync('api/contact.mjs'), 'Missing Vercel contact function');
   const {default:handler}=await import('../api/contact.mjs');

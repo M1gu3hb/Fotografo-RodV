@@ -45,13 +45,17 @@ async function getSupabasePage(params) {
     headers: { apikey: key, Authorization: `Bearer ${key}`, Prefer: 'count=exact' },
     signal: AbortSignal.timeout(8000),
   });
+  const range = response.headers.get('content-range') || '0-0/0';
+  const total = Number(range.split('/')[1]);
+  if (response.status === 416 && Number.isSafeInteger(total) && total >= 0) {
+    return { items: [], total, nextOffset: null };
+  }
   if (!response.ok) throw new Error(`Supabase respondió ${response.status}`);
   const rows = await response.json();
-  const range = response.headers.get('content-range') || '0-0/0';
-  const total = Number(range.split('/')[1]) || 0;
   const { offset } = parseRequest(params);
   const items = rows.map(({ source_ref, ...photo }) => ({ ...photo, sourceRef: source_ref }));
-  return { items, total, nextOffset: offset + items.length < total ? offset + items.length : null };
+  const exactTotal = Number.isSafeInteger(total) && total >= 0 ? total : 0;
+  return { items, total: exactTotal, nextOffset: offset + items.length < exactTotal ? offset + items.length : null };
 }
 
 let photos;
