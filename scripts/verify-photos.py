@@ -1,6 +1,6 @@
 """Validate every public derivative, metadata policy and traceability."""
 from pathlib import Path
-import json, hashlib
+import base64, hashlib, io, json
 from PIL import Image
 
 photos=json.loads(Path('data/gallery.json').read_text(encoding='utf8'))
@@ -10,6 +10,16 @@ errors=[];references=set();hashes={};sizes=[]
 for p in photos:
     if int(p['sourceRef'].split('-')[0]) not in source_ids: errors.append('Unreviewed source: '+p['id'])
     if not p['alt'] or p['width']<=0 or p['height']<=0: errors.append('Invalid photo: '+p['id'])
+    placeholder=p.get('placeholder','')
+    if not placeholder.startswith('data:image/webp;base64,'):
+        errors.append('Missing placeholder: '+p['id'])
+    else:
+        try:
+            with Image.open(io.BytesIO(base64.b64decode(placeholder.split(',',1)[1],validate=True))) as preview:
+                preview.load()
+                if preview.format!='WEBP' or max(preview.size)>24: errors.append('Invalid placeholder: '+p['id'])
+        except Exception:
+            errors.append('Unreadable placeholder: '+p['id'])
     for v in p['versions']:
         path=Path('public'+v['src']);references.add(path.resolve())
         if not path.is_file():errors.append('Missing '+str(path));continue

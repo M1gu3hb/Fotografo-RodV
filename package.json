@@ -12,7 +12,8 @@
     "test": "node --test tests/*.test.mjs",
     "audit:photos": "python scripts/audit-photos.py",
     "generate:gallery": "python scripts/process-photos.py",
-    "verify:photos": "python scripts/verify-photos.py"
+    "verify:photos": "python scripts/verify-photos.py",
+    "seed:supabase": "node scripts/generate-supabase-seed.mjs"
   },
   "dependencies": {
     "@fontsource-variable/cormorant-garamond": "^5.3.0",

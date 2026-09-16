@@ -9,7 +9,8 @@ import {
   X,
 } from "lucide-react";
 
-import Gallery, { PhotoImage, type PageData } from "./Gallery";
+import Gallery, { PhotoImage, type PageData, type Photo } from "./Gallery";
+import { MotionText, useScrollReveals } from "./Motion";
 import contact from "./config/contact.json";
 
 const navItems = [
@@ -44,17 +45,37 @@ const experiences = [
 function Brand({ compact = false }: { compact?: boolean }) {
   return (
     <a className={`brand ${compact ? "brand--compact" : ""}`} href="/" aria-label="The Best Moment, inicio">
-      <svg className="brand__mark" viewBox="0 0 48 48" aria-hidden="true">
-        <path d="M5 17V5h12M31 5h12v12M43 31v12H31M17 43H5V31" />
-        <path d="M15 24h18M24 15v18" className="brand__mark-cross" />
-        <rect x="21" y="21" width="6" height="6" transform="rotate(45 24 24)" />
-      </svg>
-      <span className="brand__type">
-        <span className="brand__small">The best</span>
-        <span className="brand__large">Moment</span>
+      <span className="brand__motion">
+        <svg className="brand__mark" viewBox="0 0 48 48" aria-hidden="true">
+          <path d="M5 17V5h12M31 5h12v12M43 31v12H31M17 43H5V31" />
+          <path d="M15 24h18M24 15v18" className="brand__mark-cross" />
+          <rect x="21" y="21" width="6" height="6" transform="rotate(45 24 24)" />
+        </svg>
+        <span className="brand__type">
+          <span className="brand__small">The best</span>
+          <span className="brand__large">Moment</span>
+        </span>
       </span>
     </a>
   );
+}
+
+function StoryRail({ photos }: { photos: Photo[] }) {
+  const selected = photos.slice(3, 8);
+  if (!selected.length) return null;
+  return <section className="story-rail" aria-label="Una secuencia de historias">
+    <div className="story-rail__heading section-pad">
+      <p className="section-index">01 / En movimiento</p>
+      <MotionText as="h2" text="Una historia se revela por fragmentos." />
+      <p>Un recorrido de luz, gestos y pausas inspirado en la forma de mirar de Rodrigo.</p>
+    </div>
+    <div className="story-rail__track">
+      {selected.map((photo, index) => <figure className="story-rail__item" data-parallax key={photo.id}>
+        <PhotoImage photo={photo} sizes="(max-width: 720px) 78vw, 28vw" />
+        <figcaption>0{index + 1} / The Best Moment</figcaption>
+      </figure>)}
+    </div>
+  </section>;
 }
 
 function App({ page }: { page: PageData }) {
@@ -63,6 +84,7 @@ function App({ page }: { page: PageData }) {
   const currentCollection = site.collections.find(c => c.slug === category);
   const menuRef = useRef<HTMLDialogElement>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  useScrollReveals();
 
   useEffect(() => {
     if (menuOpen) menuRef.current?.showModal();
@@ -120,10 +142,7 @@ function App({ page }: { page: PageData }) {
         <section className="hero" id="inicio">
           <div className="hero__copy">
             <p className="eyebrow">Fotografía por Rodrigo Vargas</p>
-            <h1>
-              Lo extraordinario
-              <span>vive en un instante.</span>
-            </h1>
+            <MotionText as="h1" text="Lo extraordinario vive en un instante." accentFrom={2} breakAfter={1} />
             <div className="hero__copy-bottom">
               <p>Fotografía para celebrar, recordar y volver a sentir.</p>
               <div className="hero__actions">
@@ -159,25 +178,31 @@ function App({ page }: { page: PageData }) {
           </div>
         </section>
 
+        <StoryRail photos={site.initial} />
+
         <section className="portfolio section-pad" id="portafolio">
           <div className="section-heading">
             <div>
-              <p className="section-index">01 / Portafolio</p>
-              <h2>Historias que permanecen.</h2>
+              <p className="section-index">02 / Portafolio</p>
+              <MotionText as="h2" text="Historias que permanecen." />
             </div>
             <p>Bodas, XV años y retratos. Cada colección, una forma distinta de mirar.</p>
           </div>
 
-          <div className="collection-grid">
+          <nav className="collection-showcase" aria-label="Colecciones fotográficas">
             {site.collections.map((collection, index) => (
-              <a className="collection" href={`/colecciones/${collection.slug}`} key={collection.slug}>
-                <PhotoImage photo={collection.cover} />
+              <a className={`collection-showcase__item collection-showcase__item--${index + 1}`} href={`/colecciones/${collection.slug}`} key={collection.slug} data-parallax>
+                <div className="collection-showcase__image"><PhotoImage photo={collection.cover} sizes="(max-width: 720px) 100vw, 52vw" /></div>
                 <div className="collection__veil" />
-                <div className="collection__meta"><span>0{index + 1}</span><h3>{collection.title}</h3><ChevronRight size={20} /></div>
-                <span className="collection__count">{collection.total} fotografías</span>
+                <div className="collection-showcase__meta">
+                  <span>0{index + 1}</span>
+                  <h3>{collection.title}</h3>
+                  <span>{collection.total} fotografías</span>
+                  <ChevronRight size={22} />
+                </div>
               </a>
             ))}
-          </div>
+          </nav>
 
           <div className="archive-link"><p>{site.total} fotografías. Un archivo para descubrir a tu ritmo.</p><a className="text-link" href="/portafolio">Explorar el archivo <ArrowUpRight size={17} /></a></div>
         </section>
@@ -185,8 +210,8 @@ function App({ page }: { page: PageData }) {
         <section className="experiences section-pad" id="experiencias">
           <div className="section-heading section-heading--light">
             <div>
-              <p className="section-index">02 / Experiencias</p>
-              <h2>Elige cómo quieres recordarlo.</h2>
+              <p className="section-index">03 / Experiencias</p>
+              <MotionText as="h2" text="Elige cómo quieres recordarlo." />
             </div>
             <p>Cada propuesta podrá personalizarse según el evento, la duración y la forma de entrega.</p>
           </div>
@@ -226,8 +251,8 @@ function App({ page }: { page: PageData }) {
             </div>
           </div>
           <div className="photobooks__copy">
-            <p className="section-index">03 / Fotolibros</p>
-            <h2>De la pantalla a tus manos.</h2>
+            <p className="section-index">04 / Fotolibros</p>
+            <MotionText as="h2" text="De la pantalla a tus manos." />
             <p>
               Una selección de imágenes convertida en una pieza editorial para volver a ella durante años.
             </p>
@@ -243,7 +268,7 @@ function App({ page }: { page: PageData }) {
         </section>
 
         <section className="process section-pad" id="proceso">
-          <div className="section-heading"><div><p className="section-index">04 / El proceso</p><h2>Todo comienza contigo.</h2></div><p>Una cobertura pensada desde la conversación hasta la última imagen.</p></div>
+          <div className="section-heading"><div><p className="section-index">05 / El proceso</p><MotionText as="h2" text="Todo comienza contigo." /></div><p>Una cobertura pensada desde la conversación hasta la última imagen.</p></div>
           <div className="process-grid">
             <article><span>01</span><h3>Conversamos</h3><p>Tu historia, la fecha y lo que te gustaría conservar.</p></article>
             <article><span>02</span><h3>Damos forma</h3><p>Acordamos la cobertura y una propuesta a tu medida.</p></article>
@@ -253,7 +278,7 @@ function App({ page }: { page: PageData }) {
         </section>
         </> : <section className="collection-page section-pad">
           <a className="text-link" href="/#portafolio">← Volver a las colecciones</a>
-          <div className="section-heading"><div><p className="section-index">El archivo / Rodrigo Vargas</p><h1>{currentCollection?.title || 'Todas las historias.'}</h1></div><p>{currentCollection?.description || 'Un recorrido por bodas, XV años y retratos. Explora las imágenes y detente en sus detalles.'}</p></div>
+          <div className="section-heading"><div><p className="section-index">El archivo / Rodrigo Vargas</p><MotionText as="h1" text={currentCollection?.title || 'Todas las historias.'} /></div><p>{currentCollection?.description || 'Un recorrido por bodas, XV años y retratos. Explora las imágenes y detente en sus detalles.'}</p></div>
           <nav className="filters" aria-label="Filtrar fotografías">
             <a href="/portafolio" aria-current={category === 'todas' ? 'page' : undefined}>Todas <span>{site.total}</span></a>
             {site.collections.map(c => <a key={c.slug} href={`/colecciones/${c.slug}`} aria-current={category === c.slug ? 'page' : undefined}>{c.title} <span>{c.total}</span></a>)}
@@ -261,7 +286,7 @@ function App({ page }: { page: PageData }) {
           <Gallery initial={page.items} total={page.total} category={category} offset={page.offset} />
         </section>}
         <section className="contact section-pad" id="contacto">
-          <div className="contact__intro"><p className="section-index">05 / Contacto</p><h2>Cuéntame qué quieres recordar.</h2><p>Tu fecha, tu celebración y tu manera de vivirla. Ese es el punto de partida para diseñar una cobertura personal.</p></div>
+          <div className="contact__intro"><p className="section-index">06 / Contacto</p><MotionText as="h2" text="Cuéntame qué quieres recordar." /><p>Tu fecha, tu celebración y tu manera de vivirla. Ese es el punto de partida para diseñar una cobertura personal.</p></div>
           <div className="contact-options">
             {contact.whatsapp || contact.email || contact.phone ? <>
               {contact.whatsapp && <a className="button button--light" href={`https://wa.me/${contact.whatsapp}`}>Consultar por WhatsApp <ArrowUpRight size={17} /></a>}

@@ -10,7 +10,7 @@ export function getPageData(pathname) {
   const filtered = category === 'todas' ? photos : photos.filter(p => p.category === category);
   const offset = (number - 1) * 24;
   if (!Number.isSafeInteger(number) || number < 1 || (category !== 'inicio' && offset >= filtered.length)) throw new Error('Not found');
-  const compactSite = { ...site, initial: [], collections: site.collections.map(c => ({ ...c, initial: [] })) };
+  const compactSite = { ...site, initial: category === 'inicio' ? site.initial.slice(0,8) : [], collections: site.collections.map(c => ({ ...c, initial: [] })) };
   return { site: compactSite, category, items: filtered.slice(offset, offset + 24), total: filtered.length, offset };
 }
 export function serializePage(page) { return JSON.stringify(page).replaceAll('<', '\\u003c'); }

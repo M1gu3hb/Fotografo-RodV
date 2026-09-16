@@ -13,5 +13,6 @@ output/
 __pycache__/
 *.pyc
 originals/
+supabase/seed/
 .env*
 !.env.example

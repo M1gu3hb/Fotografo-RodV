@@ -14,12 +14,13 @@ npm run build
 npm run preview -- --host 127.0.0.1
 ```
 
-El build prerenderiza la portada, colecciones y todas sus páginas. El servidor local reproduce las dos API de Vercel para probar la paginación. No requiere base de datos, almacenamiento contratado ni servicios externos.
+El build prerenderiza la portada, colecciones y todas sus páginas. El servidor local reproduce las dos API de Vercel para probar la paginación. En producción, la función de galería en Vercel lee el catálogo público desde una tabla aislada de Supabase; si no existen variables locales, usa el manifiesto JSON como respaldo de desarrollo.
 
 ## Estructura
 
-- `src/App.tsx`: portada, marca, servicios, paquetes y contacto.
-- `src/Gallery.tsx`: galería de 24 fotos por página y visor accesible.
+- `src/App.tsx`: portada, secuencia fotográfica, colecciones, servicios, paquetes y contacto.
+- `src/Motion.tsx`: revelados de texto y parallax acotado, con soporte para movimiento reducido.
+- `src/Gallery.tsx`: galería de 24 fotos por página, placeholders WebP desenfocados y visor accesible.
 - `src/config/contact.json`: correo, teléfono, WhatsApp, Instagram y ubicación. Los valores nulos ocultan los canales; no existe un envío simulado. Completar destinos reales y reconstruir. WhatsApp debe ser un enlace HTTPS de wa.me.
 - `src/data/site.json`: selección de portada y resúmenes generados.
 - `data/gallery.json`: catálogo completo utilizado por prerender y la función de Vercel.
@@ -28,6 +29,7 @@ El build prerenderiza la portada, colecciones y todas sus páginas. El servidor 
 - `public/photos`: únicamente derivados WebP revisados; nombres con hash del original y del recorte.
 - `public/brand`: identidad, texturas de interfaz e imagen social.
 - `scripts`: auditoría, recorte, deduplicación, exportación y prerender.
+- `supabase/migrations`: tabla exclusiva `rodrigo_portfolio_photos`, RLS y permisos de sólo lectura. No modifica tablas de otros proyectos.
 - `private-audit`: inventario nominal, coordenadas, pruebas y hojas de contacto locales. Está excluido de Git y Vercel.
 - `output/playwright`: evidencia visual local, excluida de Git.
 
@@ -47,7 +49,7 @@ python scripts/verify-photos.py
 npm run build
 ```
 
-El plan revisado `scripts/crop-plan.json` guarda nombre relativo, categoría, tipo y rectángulos normalizados `[izquierda, arriba, derecha, abajo]`. Se corrige EXIF, se convierte ICC a sRGB y se extraen las regiones; las versiones tienen lado largo máximo 480, 1200 y 2400 px, calidad WebP 88/92/94. Nunca se aumenta la resolución nativa. Se quitan EXIF/XMP/GPS y se aplica nitidez moderada únicamente al reducir. No se reconstruye detalle ni se usa relleno generativo.
+El plan revisado `scripts/crop-plan.json` guarda nombre relativo, categoría, tipo y rectángulos normalizados `[izquierda, arriba, derecha, abajo]`. Se corrige EXIF, se convierte ICC a sRGB y se extraen las regiones; las versiones tienen lado largo máximo 480, 1200 y 2400 px, calidad WebP 88/92/94. Cada foto incluye además un preview WebP de hasta 24 px para evitar el pintado visible de arriba hacia abajo mientras llega la versión completa. Nunca se aumenta la resolución nativa. Se quitan EXIF/XMP/GPS y se aplica nitidez moderada únicamente al reducir. No se reconstruye detalle ni se usa relleno generativo.
 
 `--resume` reutiliza candidatos locales; usar exclusivamente si no cambiaron originales, categorías ni coordenadas. Los archivos ya exportados se reutilizan por hash de contenido y recorte. La generación elimina solo derivados WebP propios que dejaron de estar referenciados. Cambiar la política de calidad exige incrementar `quality-v1` en el script para invalidar la caché.
 
@@ -65,7 +67,19 @@ Los paquetes Esencia, Historia y Legado están en `experiences` dentro de `src/A
 
 Confirmar derechos y consentimientos de publicación, especialmente de menores. No se muestran nombres de personas fotografiadas. Las muestras comerciales de cajas permanecen excluidas hasta aclarar procedencia. Ver `data/photo-report.json` y el inventario privado para los ID.
 
-## Publicar en el proyecto existente
+## Backend aislado en Supabase
+
+La tabla `public.rodrigo_portfolio_photos` vive en el proyecto compartido **Mis proyectos**. Contiene únicamente metadatos públicos y referencias a los derivados servidos por Vercel; los binarios no se duplican en Supabase. RLS permite leer exclusivamente filas con `published = true`. Los roles `anon` y `authenticated` tienen sólo `SELECT`; no hay permisos de escritura, funciones, triggers ni cambios en tablas ajenas.
+
+Después de regenerar el manifiesto, crear lotes locales de carga con:
+
+```powershell
+npm run seed:supabase
+```
+
+Los lotes de `supabase/seed` se excluyen de Git. Aplicarlos exclusivamente al proyecto verificado `vuzyhbiwnnngeohysxcw` y revisar conteos, grants y políticas después de cada carga.
+
+## Publicar en los proyectos existentes
 
 ```powershell
 npm ci
@@ -74,10 +88,12 @@ npm run typecheck
 npm test
 npm run build
 vercel link --yes --project the-best-moment --scope mh-astral-systems
+vercel env add SUPABASE_URL production
+vercel env add SUPABASE_PUBLISHABLE_KEY production
 vercel deploy --prod --yes --scope mh-astral-systems
 ```
 
-Integrar primero la rama verificada en `main` y subir al repositorio existente. Las funciones Node y los recursos estáticos se alojan en Vercel. No se usa Blob, base de datos externa ni backend fuera de Vercel. Los ~585 MB de derivados se mantienen en Git como pidió el cliente; la descarga inicial selecciona solo los tamaños necesarios, no el archivo completo. Evitar reexportaciones innecesarias que aumenten el historial Git.
+Integrar primero la rama verificada en `main` y subir al repositorio existente. Todo el backend ejecutable y los recursos estáticos se alojan en Vercel; Supabase aporta únicamente el catálogo de metadatos con RLS. No se usa Blob ni Supabase Storage. Los ~585 MB de derivados se mantienen en Git como pidió el cliente; `srcset` y `sizes` descargan la versión adecuada y el placeholder inmediato evita revelar el barrido de decodificación. Evitar reexportaciones innecesarias que aumenten el historial Git.
 
 ## Entrega fotográfica
 
@@ -87,11 +103,12 @@ Integrar primero la rama verificada en `main` y subir al repositorio existente. 
 
 ## Verificaciones de la entrega
 
-- Instalación limpia, lint, TypeScript y tres pruebas automatizadas de API/portafolio.
-- Build de cliente (67,09 kB gzip de JavaScript) y prerender de 65 rutas.
+- Instalación limpia, lint, TypeScript, auditoría de dependencias y siete pruebas automatizadas de API, movimiento, portafolio y RLS.
+- Build de cliente (68,21 kB gzip de JavaScript) y prerender de 65 rutas.
 - Comprobación completa de 750 fotografías y 1.959 derivados: sin referencias ausentes, sin duplicados binarios públicos, sin EXIF/XMP y sin ampliación artificial.
 - Rastreo HTTP local de 65 rutas y 1.963 recursos: cero errores. Repetible con `node scripts/verify-http.mjs [URL]`; resultados privados en `output`.
-- Navegador a 320, 390, 768, 1440 y 1920 px: sin desbordamiento horizontal; menú móvil, Escape, flechas del visor, restauración de foco, paginación, últimas páginas y contacto verificados. Fotografías cargadas en móvil/tablet/escritorio sin fallos. Sin errores de JavaScript en estas pruebas.
+- Navegador a 320, 390, 768, 1440 y 1920 px: sin desbordamiento horizontal; tipografías locales, menú móvil, Escape, flechas del visor, restauración de foco, paginación, scroll-snap y movimiento reducido verificados. El preview aparece antes de la foto completa y no se registran errores de JavaScript.
+- Supabase: 750 filas publicadas (405 bodas, 332 XV años y 13 retratos), cero placeholders inválidos, RLS activo y permisos públicos limitados a `SELECT`.
 - Las advertencias de duración de plugins de Vite corresponden a copiar los derivados al directorio de salida; no son errores del sitio.
 
 Las versiones grandes conservan como máximo 2400 px en su lado largo. Algunos recortes de páginas impresas tienen menos resolución nativa: se conserva esa resolución, sin inventar detalles. Obtener archivos individuales originales permitiría mejorar esos casos en una futura actualización.

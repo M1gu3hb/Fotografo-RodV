@@ -1,7 +1,7 @@
 """Generate non-destructive, color-managed web derivatives from reviewed crop plan."""
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor
-import sys, json, hashlib, io
+import sys, json, hashlib, io, base64
 import numpy as np
 import cv2
 from PIL import Image, ImageOps, ImageCms, ImageFilter, ImageDraw
@@ -107,7 +107,10 @@ def export(group):
         context='Escena de boda' if c['category']=='bodas' else 'Celebración de XV años' if c['category']=='xv-anos' else 'Retrato de estudio'
         descriptions={'018-00':'Pareja de novios frente a una fachada histórica de piedra','004-00':'Retrato con vestido rosa junto a un muro de piedra y vegetación','002-00':'Pareja de novios entre muros de piedra bajo luz natural','017-00':'Retrato con vestido rojo junto a una pared de ladrillo','032-00':'Pareja de novios bajo un arco de piedra','008-00':'Pareja de novios sobre un puente de madera','021-00':'Pareja de novios en una sesión nocturna','033-00':'Retrato de XV años con vestido magenta en un jardín','015-00':'Pareja de novios frente a una puerta labrada','320-00':'Pareja de novios junto a un muro de color terracota','322-00':'Pareja abrazada bajo un cielo azul','260-00':'Siluetas de una pareja junto al agua al atardecer'}
         context=descriptions.get(c['id'],context)
-        result.append(dict(id=slug,category=c['category'],alt=context+' · fotografía de Rodrigo Vargas',width=c['width'],height=c['height'],versions=versions,sourceRef=c['id']))
+        tiny=crop.copy();tiny.thumbnail((24,24),Image.Resampling.LANCZOS)
+        placeholder_buffer=io.BytesIO();tiny.save(placeholder_buffer,format='WEBP',quality=38,method=4)
+        placeholder='data:image/webp;base64,'+base64.b64encode(placeholder_buffer.getvalue()).decode('ascii')
+        result.append(dict(id=slug,category=c['category'],alt=context+' · fotografía de Rodrigo Vargas',width=c['width'],height=c['height'],versions=versions,placeholder=placeholder,sourceRef=c['id']))
     return result
 with ThreadPoolExecutor(max_workers=4) as pool:photos=[p for group in pool.map(export,grouped.items()) for p in group]
 hero_order=['018-00','004-00','002-00','017-00','032-00','008-00','021-00','033-00','015-00','320-00','322-00','260-00']

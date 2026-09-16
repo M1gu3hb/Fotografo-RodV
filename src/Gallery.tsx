@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { ArrowLeft, ArrowRight, X, Maximize2 } from 'lucide-react';
 
 export type Photo = {
   id: string; category: string; alt: string; width: number; height: number;
   versions: { src: string; width: number; height: number; bytes: number }[];
+  placeholder?: string;
 };
 export type Collection = { slug: string; title: string; description: string; total: number; cover: Photo; initial: Photo[] };
 export type SiteData = { hero: Photo; collections: Collection[]; total: number; initial: Photo[] };
@@ -11,10 +12,24 @@ export type PageData = { site: SiteData; category: string; items: Photo[]; total
 
 export function PhotoImage({ photo, priority = false, sizes = '(max-width: 600px) 100vw, (max-width: 1050px) 50vw, 33vw', large = false }: { photo: Photo; priority?: boolean; sizes?: string; large?: boolean }) {
   const versions = photo.versions;
-  return <img src={versions[large ? versions.length - 1 : Math.min(1, versions.length - 1)].src}
-    srcSet={versions.map(v => `${v.src} ${v.width}w`).join(', ')} sizes={sizes}
-    alt={photo.alt} width={photo.width} height={photo.height}
-    loading={priority ? 'eager' : 'lazy'} fetchPriority={priority ? 'high' : 'auto'} decoding="async" />;
+  const image = useRef<HTMLImageElement>(null);
+  const [loaded, setLoaded] = useState(false);
+  useEffect(() => {
+    if (image.current?.complete && image.current.naturalWidth > 0) setLoaded(true);
+  }, []);
+  const style = {
+    aspectRatio: `${photo.width} / ${photo.height}`,
+    '--placeholder': photo.placeholder ? `url("${photo.placeholder}")` : 'none',
+  } as CSSProperties;
+  return <span className={`photo-frame ${loaded ? 'is-loaded' : ''}`} style={style}>
+    <span className="photo-frame__placeholder" aria-hidden="true" />
+    <img ref={image} className="photo-frame__image"
+      src={versions[large ? versions.length - 1 : Math.min(1, versions.length - 1)].src}
+      srcSet={versions.map(v => `${v.src} ${v.width}w`).join(', ')} sizes={sizes}
+      alt={photo.alt} width={photo.width} height={photo.height}
+      onLoad={() => setLoaded(true)}
+      loading={priority ? 'eager' : 'lazy'} fetchPriority={priority ? 'high' : 'auto'} decoding={priority ? 'sync' : 'async'} />
+  </span>;
 }
 
 function Lightbox({ photos, index, onClose, onChange }: { photos: Photo[]; index: number; onClose: () => void; onChange: (n: number) => void }) {
