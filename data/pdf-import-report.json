@@ -1,0 +1,29 @@
+{
+  "source": "PDF THE BEST MOMENTS 2026.pdf",
+  "pageRasterization": false,
+  "plannedCrops": 62,
+  "accepted": 57,
+  "duplicates": [
+    {
+      "sourceRef": "pdf-02-01",
+      "duplicateOf": "bodas-059-01-63e3fa308d"
+    },
+    {
+      "sourceRef": "pdf-02-02",
+      "duplicateOf": "bodas-059-02-1479ab0707"
+    },
+    {
+      "sourceRef": "pdf-05-01",
+      "duplicateOf": "bodas-114-02-17277094b9"
+    },
+    {
+      "sourceRef": "pdf-05-05",
+      "duplicateOf": "bodas-081-04-55d3be21c6"
+    },
+    {
+      "sourceRef": "pdf-07-03",
+      "duplicateOf": "bodas-005-00-b681ee9443"
+    }
+  ],
+  "contactSheet": "tmp\\pdfs\\import-contact-sheet.jpg"
+}

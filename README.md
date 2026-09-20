@@ -1,116 +1,79 @@
 # The Best Moment — Rodrigo Vargas
 
-Portafolio editorial en React, TypeScript y Vite. Producción: https://the-best-moment.vercel.app. Repositorio existente: M1gu3hb/Fotografo-RodV. Node.js 24.
+Sitio editorial multipágina en React, TypeScript y Vite. Producción: https://the-best-moment.vercel.app. Repositorio: `M1gu3hb/Fotografo-RodV`.
 
 ## Ejecutar y verificar
 
 ```powershell
 npm ci
-npm run dev
 npm run lint
 npm run typecheck
 npm test
 npm run build
+python scripts/verify-photos.py
 npm run preview -- --host 127.0.0.1
 ```
 
-El build prerenderiza la portada, colecciones y todas sus páginas. El servidor local reproduce las dos API de Vercel para probar la paginación. En producción, la función de galería en Vercel lee el catálogo público desde una tabla aislada de Supabase; si no existen variables locales, usa el manifiesto JSON como respaldo de desarrollo.
+El build prerenderiza la portada, el índice de paquetes, las seis páginas de paquete, la experiencia, fotolibros, colecciones y toda su paginación. En producción, la función de galería de Vercel consulta una tabla aislada de Supabase; el manifiesto JSON es el respaldo local.
 
 ## Estructura
 
-- `src/App.tsx`: portada, secuencia fotográfica, colecciones, servicios, paquetes y contacto.
-- `src/Motion.tsx`: revelados de texto y parallax acotado, con soporte para movimiento reducido.
-- `src/Gallery.tsx`: galería de 24 fotos por página, placeholders WebP desenfocados y visor accesible.
-- `src/config/contact.json`: correo, teléfono, WhatsApp, Instagram y ubicación. Los valores nulos ocultan los canales; no existe un envío simulado. Completar destinos reales y reconstruir. WhatsApp debe ser un enlace HTTPS de wa.me.
-- `src/data/site.json`: selección de portada y resúmenes generados.
-- `data/gallery.json`: catálogo completo utilizado por prerender y la función de Vercel.
+- `src/App.tsx`: navegación, menú móvil, contacto y estructura global.
+- `src/SitePages.tsx`: portada, paquetes, experiencia, fotolibros y archivo.
+- `src/Motion.tsx`: revelados de texto y parallax acotado, con movimiento reducido.
+- `src/Gallery.tsx`: galería paginada, carga progresiva y visor accesible.
+- `src/data/packages.json`: contenido de los seis paquetes 2026.
+- `src/config/contact.json`: teléfono y WhatsApp proporcionados en el catálogo.
+- `data/gallery.json`: catálogo completo para prerender y función de Vercel.
 - `api/gallery.mjs`: paginación y filtros, máximo 48 resultados por petición.
-- `api/contact.mjs`: configuración pública; POST devuelve 503 y sent:false mientras no exista un servicio real de recepción.
-- `public/photos`: únicamente derivados WebP revisados; nombres con hash del original y del recorte.
-- `public/brand`: identidad, texturas de interfaz e imagen social.
-- `scripts`: auditoría, recorte, deduplicación, exportación y prerender.
-- `supabase/migrations`: tabla exclusiva `rodrigo_portfolio_photos`, RLS y permisos de sólo lectura. No modifica tablas de otros proyectos.
-- `private-audit`: inventario nominal, coordenadas, pruebas y hojas de contacto locales. Está excluido de Git y Vercel.
-- `output/playwright`: evidencia visual local, excluida de Git.
+- `public/photos`: derivados WebP sin metadatos ni ampliación artificial.
+- `scripts/prerender.mjs`: rutas, metadatos, sitemap y datos estructurados.
+- `supabase/migrations`: tabla exclusiva `rodrigo_portfolio_photos`, RLS y permisos de sólo lectura.
 
-Los originales permanecen en la carpeta superior local `D:\MIS PROYECTOS\Rodrigo VF`, fuera de los recursos públicos. El script de auditoría omite el subdirectorio `site`. No añadir originales, videos, archivos .env ni inventarios privados al repositorio.
+Los originales, videos y archivos de trabajo permanecen en la carpeta superior local `D:\MIS PROYECTOS\Rodrigo VF`, fuera de los recursos públicos. `tmp`, `private-audit`, `output`, archivos `.env` y lotes de carga están excluidos de Git o Vercel.
 
-## Regenerar las fotografías existentes
+## Fotografías
 
-Requiere Python y las dependencias de `scripts/requirements.txt`:
+La galería contiene 807 fotos: 462 bodas, 332 XV años y 13 retratos. Hay 2.067 derivados que pesan 597.577.692 bytes. La verificación integral confirma que no hay archivos ausentes, duplicados binarios públicos, EXIF/XMP ni imágenes ampliadas por código.
+
+Las versiones existentes tienen lados largos máximos de 480, 1200 y 2400 px. Los recortes del PDF conservan su tamaño nativo y sólo generan anchos menores o iguales al original. Los placeholders WebP de hasta 24 px evitan el pintado visible; en escritorio permanecen 0,7 s, después un flash radial parte del centro y finalmente aparece la fotografía.
+
+## Importar fotografías del PDF 2026
+
+`scripts/import-pdf-photos.py` abre directamente los JPEG incrustados en el PDF. Aplica los 62 rectángulos revisados de `scripts/pdf-photo-plan.json`, elimina los separadores impresos y compara cada recorte contra el archivo existente con hashes perceptuales y SIFT. Nunca rasteriza la página ni aumenta resolución.
 
 ```powershell
-python -m pip install -r scripts/requirements.txt
-python scripts/audit-photos.py "D:\MIS PROYECTOS\Rodrigo VF"
-python scripts/process-photos.py "D:\MIS PROYECTOS\Rodrigo VF"
-python scripts/social-image.py
-python scripts/report-inventory.py
+python scripts/import-pdf-photos.py --dry-run --skip-dedupe
+python scripts/import-pdf-photos.py
 python scripts/verify-photos.py
-npm run build
 ```
 
-El plan revisado `scripts/crop-plan.json` guarda nombre relativo, categoría, tipo y rectángulos normalizados `[izquierda, arriba, derecha, abajo]`. Se corrige EXIF, se convierte ICC a sRGB y se extraen las regiones; las versiones tienen lado largo máximo 480, 1200 y 2400 px, calidad WebP 88/92/94. Cada foto incluye además un preview WebP de hasta 24 px para evitar el pintado visible de arriba hacia abajo mientras llega la versión completa. Nunca se aumenta la resolución nativa. Se quitan EXIF/XMP/GPS y se aplica nitidez moderada únicamente al reducir. No se reconstruye detalle ni se usa relleno generativo.
-
-`--resume` reutiliza candidatos locales; usar exclusivamente si no cambiaron originales, categorías ni coordenadas. Los archivos ya exportados se reutilizan por hash de contenido y recorte. La generación elimina solo derivados WebP propios que dejaron de estar referenciados. Cambiar la política de calidad exige incrementar `quality-v1` en el script para invalidar la caché.
-
-## Añadir material
-
-1. Copiar nuevos originales a una carpeta local fuera de `public` y ejecutar la auditoría. Conserva los ID existentes del plan: el orden del inventario puede cambiar al añadir archivos; conciliar por nombre y SHA256, asignando ID nuevos sin reutilizar los anteriores.
-2. Revisar visualmente cada archivo. `detect-crops.py` genera propuestas en `private-audit`; no son aprobaciones automáticas. Incorporar al plan únicamente rectángulos limpios, categoría real y `reviewed:true`. Marcar lo ambiguo sin recortes. Nunca publicar una página compuesta completa como foto.
-3. Generar con `--review-only`, revisar candidatos y duplicados; `deduplicate-photos.py` propone coincidencias geométricas. Revisar sus pares antes de aceptar `visual-duplicates.json`. `manual-duplicates.json` y `photo-exclusions.json` documentan decisiones adicionales. No ejecutar los scripts históricos `review-crops.py` y `refine-crops.py` sobre material nuevo: registran ajustes concretos de esta entrega.
-4. Generar sin `--resume`, revisar hojas de contacto finales, verificar fotos y reconstruir. El inventario final JSON/CSV enlaza originales con recortes y duplicados; permanece privado.
-5. Para una categoría nueva, actualizar la selección/definición de colecciones en `process-photos.py` y la lista de categorías permitidas en `api/gallery.mjs`; el prerender crea sus rutas a partir del manifiesto. Añadir cobertura de pruebas para el filtro.
-
-## Contenido pendiente
-
-Los paquetes Esencia, Historia y Legado están en `experiences` dentro de `src/App.tsx`. Son propuestas configurables: completar precios, cobertura, entregables y condiciones solo con datos aprobados por Rodrigo. Contacto aún pendiente: correo, teléfono, WhatsApp, Instagram y ubicación/área de servicio. No se ha confirmado dominio propio; el canónico usa el dominio existente de Vercel. Si cambia, actualizar `base` en `scripts/prerender.mjs`.
-
-Confirmar derechos y consentimientos de publicación, especialmente de menores. No se muestran nombres de personas fotografiadas. Las muestras comerciales de cajas permanecen excluidas hasta aclarar procedencia. Ver `data/photo-report.json` y el inventario privado para los ID.
+Cinco coincidencias se descartaron y 57 fotos nuevas se publicaron. `data/pdf-import-report.json` documenta la operación.
 
 ## Backend aislado en Supabase
 
-La tabla `public.rodrigo_portfolio_photos` vive en el proyecto compartido **Mis proyectos**. Contiene únicamente metadatos públicos y referencias a los derivados servidos por Vercel; los binarios no se duplican en Supabase. RLS permite leer exclusivamente filas con `published = true`. Los roles `anon` y `authenticated` tienen sólo `SELECT`; no hay permisos de escritura, funciones, triggers ni cambios en tablas ajenas.
+La tabla `public.rodrigo_portfolio_photos` vive en el proyecto compartido **Mis proyectos** (`vuzyhbiwnnngeohysxcw`). Contiene sólo metadatos públicos y rutas a imágenes servidas por Vercel. RLS permite leer filas con `published = true`; `anon` y `authenticated` tienen únicamente `SELECT`.
 
-Después de regenerar el manifiesto, crear lotes locales de carga con:
+Estado verificado: 807 filas, 57 fuentes `pdf-*`, órdenes únicos de 0 a 806. No se modifican tablas, funciones ni políticas ajenas.
 
-```powershell
-npm run seed:supabase
-```
-
-Los lotes de `supabase/seed` se excluyen de Git. Aplicarlos exclusivamente al proyecto verificado `vuzyhbiwnnngeohysxcw` y revisar conteos, grants y políticas después de cada carga.
-
-## Publicar en los proyectos existentes
+## Publicación
 
 ```powershell
-npm ci
 npm run lint
 npm run typecheck
 npm test
 npm run build
-vercel link --yes --project the-best-moment --scope mh-astral-systems
-vercel env add SUPABASE_URL production
-vercel env add SUPABASE_PUBLISHABLE_KEY production
 vercel deploy --prod --yes --scope mh-astral-systems
 ```
 
-Integrar primero la rama verificada en `main` y subir al repositorio existente. Todo el backend ejecutable y los recursos estáticos se alojan en Vercel; Supabase aporta únicamente el catálogo de metadatos con RLS. No se usa Blob ni Supabase Storage. Los ~585 MB de derivados se mantienen en Git como pidió el cliente; `srcset` y `sizes` descargan la versión adecuada y el placeholder inmediato evita revelar el barrido de decodificación. Evitar reexportaciones innecesarias que aumenten el historial Git.
+Vercel aloja el frontend, funciones y recursos estáticos. Supabase aporta el catálogo de metadatos con RLS. No se usa Supabase Storage.
 
-## Entrega fotográfica
+## Verificación de esta entrega
 
-324 archivos encontrados; 195 imágenes reales, 3 videos y 126 auxiliares de sistema. 750 fotos publicadas: 405 bodas, 332 XV años y 13 retratos. De ellas 704 proceden de montajes y 46 son fotos sueltas. 5 archivos de imagen duplicados exactos y 154 regiones duplicadas (son métricas distintas, no sumarlas). Se descartó una región por resolución insuficiente y tres propuestas de recorte redundantes. Cero imágenes reales dañadas. Cero montajes publicados, incluso como producto.
+- 14 pruebas automatizadas de rutas, paquetes, SEO, API, movimiento, portafolio y RLS.
+- Build de cliente de 71,26 kB gzip de JavaScript y prerender de 79 rutas.
+- Revisión en teléfono y escritorio: navegación, secuencia vertical, páginas internas, paquetes, fotolibros, carga progresiva y movimiento reducido.
+- Metadatos únicos, canónicos, Open Graph, sitemap, `ProfessionalService`, `BreadcrumbList` y `Service` para paquetes.
+- 807 filas verificadas en Supabase, con permisos públicos de sólo lectura.
 
-28 fuentes tienen notas de revisión: 17 muestras comerciales, 8 portadas/texturas con texto y 3 páginas con fondos fusionados; de estas últimas se conservaron únicamente las fotografías con límites limpios. Originales de imagen: 1.620.439.720 bytes. Todos los archivos fuente: 2.763.493.769 bytes. Derivados de galería: 585.453.904 bytes. `data/verification.json` registra cantidad, peso y errores de la comprobación integral.
-
-## Verificaciones de la entrega
-
-- Instalación limpia, lint, TypeScript, auditoría de dependencias y siete pruebas automatizadas de API, movimiento, portafolio y RLS.
-- Build de cliente (68,21 kB gzip de JavaScript) y prerender de 65 rutas.
-- Comprobación completa de 750 fotografías y 1.959 derivados: sin referencias ausentes, sin duplicados binarios públicos, sin EXIF/XMP y sin ampliación artificial.
-- Rastreo HTTP local de 65 rutas y 1.963 recursos: cero errores. Repetible con `node scripts/verify-http.mjs [URL]`; resultados privados en `output`.
-- Navegador a 320, 390, 768, 1440 y 1920 px: sin desbordamiento horizontal; tipografías locales, menú móvil, Escape, flechas del visor, restauración de foco, paginación, scroll-snap y movimiento reducido verificados. El preview aparece antes de la foto completa y no se registran errores de JavaScript.
-- Supabase: 750 filas publicadas (405 bodas, 332 XV años y 13 retratos), cero placeholders inválidos, RLS activo y permisos públicos limitados a `SELECT`.
-- Las advertencias de duración de plugins de Vite corresponden a copiar los derivados al directorio de salida; no son errores del sitio.
-
-Las versiones grandes conservan como máximo 2400 px en su lado largo. Algunos recortes de páginas impresas tienen menos resolución nativa: se conserva esa resolución, sin inventar detalles. Obtener archivos individuales originales permitiría mejorar esos casos en una futura actualización.
-
-El plan `scripts/crop-plan.json` contiene nombres originales y se conserva localmente, excluido de Git para no identificar personas a través del repositorio público. Al trasladar el flujo de procesamiento a otra máquina, copiar ese plan junto con los originales por un canal privado. El sitio y su build funcionan desde el repositorio sin los originales ni ese plan; solo la regeneración fotográfica los requiere.
+El dominio canónico actual es `the-best-moment.vercel.app`. Si se conecta un dominio propio, actualizar `base` en `scripts/prerender.mjs`.

@@ -8,7 +8,15 @@ export type Photo = {
 };
 export type Collection = { slug: string; title: string; description: string; total: number; cover: Photo; initial: Photo[] };
 export type SiteData = { hero: Photo; collections: Collection[]; total: number; initial: Photo[] };
-export type PageData = { site: SiteData; category: string; items: Photo[]; total: number; offset: number };
+export type PageData = {
+  site: SiteData;
+  kind: 'home' | 'gallery' | 'packages' | 'package' | 'experience' | 'photobooks';
+  category: string;
+  packageSlug: string | null;
+  items: Photo[];
+  total: number;
+  offset: number;
+};
 
 export function PhotoImage({ photo, priority = false, sizes = '(max-width: 600px) 100vw, (max-width: 1050px) 50vw, 33vw', large = false }: { photo: Photo; priority?: boolean; sizes?: string; large?: boolean }) {
   const versions = photo.versions;

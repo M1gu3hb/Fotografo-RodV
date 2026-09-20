@@ -6,9 +6,17 @@ from PIL import Image
 photos=json.loads(Path('data/gallery.json').read_text(encoding='utf8'))
 plan=json.loads(Path('scripts/crop-plan.json').read_text(encoding='utf8'))
 source_ids={r['id'] for r in plan if r.get('reviewed')}
+pdf_plan=json.loads(Path('scripts/pdf-photo-plan.json').read_text(encoding='utf8'))
+pdf_counts={};pdf_refs=set()
+for crop in pdf_plan:
+    page=crop['page'];pdf_counts[page]=pdf_counts.get(page,0)+1
+    pdf_refs.add(f"pdf-{page:02d}-{pdf_counts[page]:02d}")
 errors=[];references=set();hashes={};sizes=[]
 for p in photos:
-    if int(p['sourceRef'].split('-')[0]) not in source_ids: errors.append('Unreviewed source: '+p['id'])
+    source_ref=p['sourceRef']
+    if source_ref.startswith('pdf-'):
+        if source_ref not in pdf_refs: errors.append('Unreviewed PDF source: '+p['id'])
+    elif int(source_ref.split('-')[0]) not in source_ids: errors.append('Unreviewed source: '+p['id'])
     if not p['alt'] or p['width']<=0 or p['height']<=0: errors.append('Invalid photo: '+p['id'])
     placeholder=p.get('placeholder','')
     if not placeholder.startswith('data:image/webp;base64,'):

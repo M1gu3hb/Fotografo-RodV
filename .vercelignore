@@ -3,6 +3,7 @@ dist/
 node_modules/
 output/
 private-audit/
+tmp/
 .playwright-cli/
 supabase/seed/
 workspace-source/

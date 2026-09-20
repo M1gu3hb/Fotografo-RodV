@@ -9,6 +9,7 @@ scripts/crop-plan.json
 .render/
 *.tsbuildinfo
 output/
+tmp/
 .playwright-cli/
 __pycache__/
 *.pyc

@@ -1,0 +1,118 @@
+[
+  {
+    "slug": "basico",
+    "number": "01",
+    "name": "Básico",
+    "price": 11500,
+    "summary": "Seis horas de cobertura, entrega digital, impresiones y video Full HD.",
+    "description": "Una cobertura concentrada en los momentos principales del evento, con fotografías impresas y una película completa para volver a vivirlo.",
+    "features": [
+      "6 horas de cobertura",
+      "Archivos por transferencia digital",
+      "100 impresiones de 5 × 7 pulgadas",
+      "Video Full HD de 80 minutos",
+      "Video entregado en USB"
+    ]
+  },
+  {
+    "slug": "bronce",
+    "number": "02",
+    "name": "Bronce",
+    "price": 13500,
+    "summary": "Fotolibro, ampliaciones, sesión y video para una boda con una ceremonia.",
+    "description": "El paquete ideal para una boda con una sola ceremonia y para conservar los mejores recuerdos del gran día.",
+    "features": [
+      "Video Full HD de 80 minutos, entregado en USB",
+      "Photobook de 8 × 20 pulgadas con 10 hojas",
+      "1 ampliación de 16 × 20 pulgadas, laminada y montada",
+      "2 ampliaciones de 8 × 10 pulgadas, laminadas y montadas",
+      "Sesión previa o estudio el día del evento",
+      "Archivos del evento entregados en USB"
+    ],
+    "photobook": {"size": "8 × 20 pulgadas", "sheets": 10}
+  },
+  {
+    "slug": "plata",
+    "number": "03",
+    "name": "Plata",
+    "price": 16500,
+    "summary": "Video extendido, photobook, minibook, ampliaciones y sesión previa.",
+    "description": "Una propuesta más amplia que suma un photobook de mayor formato, minibook de estudio y video de 90 minutos.",
+    "features": [
+      "Video Full HD de 90 minutos, entregado en USB",
+      "Photobook de 10 × 20 pulgadas con 10 hojas",
+      "1 ampliación de 16 × 20 pulgadas, laminada y montada",
+      "1 ampliación de 11 × 14 pulgadas, laminada y montada",
+      "1 minibook de las fotos de estudio",
+      "Sesión previa o estudio el día del evento",
+      "Archivos del evento incluidos"
+    ],
+    "photobook": {"size": "10 × 20 pulgadas", "sheets": 10}
+  },
+  {
+    "slug": "oro",
+    "number": "04",
+    "name": "Oro",
+    "price": 18500,
+    "summary": "Photobook de 12 hojas, Flash Back, drone, minibook y ampliaciones.",
+    "description": "Una cobertura que incorpora tomas de referencia con drone, una película completa y un resumen Flash Back del evento.",
+    "featured": true,
+    "features": [
+      "Video Full HD de 80 minutos, entregado en USB",
+      "Flash Back del evento de aproximadamente 8 minutos",
+      "Photobook de 12 × 20 pulgadas con 12 hojas",
+      "1 ampliación de 16 × 20 pulgadas, laminada y montada",
+      "2 ampliaciones de 11 × 14 pulgadas, laminadas y montadas",
+      "1 minibook de las fotos de estudio de 8 × 20 pulgadas",
+      "Tomas de referencia con drone",
+      "Sesión previa o estudio el día del evento",
+      "Archivos del evento incluidos"
+    ],
+    "photobook": {"size": "12 × 20 pulgadas", "sheets": 12}
+  },
+  {
+    "slug": "elite-1",
+    "number": "05",
+    "name": "Elite 1",
+    "price": 22000,
+    "summary": "Cobertura amplia con sesión casual, sesión de novios, drone y piezas impresas.",
+    "description": "Pensado para cubrir una boda durante todo el día, desde la ceremonia religiosa o civil hasta la fiesta, incluyendo traslados, sorpresas y momentos especiales.",
+    "features": [
+      "Video Full HD de 90 minutos, entregado en USB",
+      "Flash Back del evento de aproximadamente 8 minutos",
+      "Photobook de 10 × 25 pulgadas con 12 hojas",
+      "1 ampliación de 16 × 20 pulgadas, laminada y montada",
+      "3 ampliaciones de 11 × 14 pulgadas, laminadas y montadas",
+      "Tomas de referencia con drone",
+      "1 minibook de las fotos de estudio",
+      "1 sesión previa casual",
+      "Archivos del evento incluidos",
+      "1 sesión de novios"
+    ],
+    "photobook": {"size": "10 × 25 pulgadas", "sheets": 12}
+  },
+  {
+    "slug": "elite-2",
+    "number": "06",
+    "name": "Elite 2",
+    "price": 26000,
+    "summary": "La cobertura más completa: Getting Ready, First Look, sesiones, drone y photobook.",
+    "description": "La experiencia integral para narrar el día desde los preparativos y el primer encuentro hasta la última parte de la celebración.",
+    "features": [
+      "Video Full HD de 90 minutos, entregado en USB",
+      "Flash Back del evento de aproximadamente 8 minutos",
+      "Photobook de 12 × 24 pulgadas con 15 hojas",
+      "1 ampliación de 16 × 20 pulgadas, laminada y montada",
+      "1 ampliación de 11 × 14 pulgadas, laminada y montada",
+      "1 ampliación de 20 × 24 pulgadas, laminada y montada",
+      "Tomas de referencia con drone",
+      "1 minibook de las fotos de estudio",
+      "1 sesión previa casual",
+      "Archivos del evento incluidos",
+      "1 sesión de novios",
+      "Getting Ready",
+      "First Look"
+    ],
+    "photobook": {"size": "12 × 24 pulgadas", "sheets": 15}
+  }
+]

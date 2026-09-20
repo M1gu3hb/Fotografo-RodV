@@ -40,7 +40,7 @@ export function useScrollReveals() {
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const revealTargets = Array.from(document.querySelectorAll<HTMLElement>(
-      "main .eyebrow, main .hero__copy-bottom, main .section-index, main .section-heading > p, main .statement p, main .experience, main .price-note, main .process-grid article, main .photobooks__copy > *, main .contact__intro > *, main .contact-options > *, main .archive-link, main .collection-showcase__item, main .story-rail__item, main .filters, main .gallery-pagination",
+      "main .eyebrow, main .hero__copy-bottom, main .section-index, main .section-heading > p, main .statement p, main .package-card, main .package-guide__items article, main .package-includes li, main .scroll-chapter, main .book-table > *, main .photobooks__copy > *, main .contact__intro > *, main .contact-options > *, main .archive-link, main .collection-showcase__item, main .story-rail__item, main .filters, main .gallery-pagination",
     ));
     revealTargets.forEach((element) => {
       if (!element.dataset.reveal) element.dataset.reveal = "up";
