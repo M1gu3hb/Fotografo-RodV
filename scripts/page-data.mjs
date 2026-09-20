@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 export function getPageData(pathname) {
   const site = JSON.parse(readFileSync('src/data/site.json', 'utf8'));
   const photos = JSON.parse(readFileSync('data/gallery.json', 'utf8'));
+  const curation = JSON.parse(readFileSync('data/curation.json', 'utf8'));
   const packages = JSON.parse(readFileSync('src/data/packages.json', 'utf8'));
   const segments = pathname.split('/').filter(Boolean);
   let kind = 'home';
@@ -24,11 +25,19 @@ export function getPageData(pathname) {
   if (kind === 'package' && !packages.some(item => item.slug === packageSlug)) throw new Error('Not found');
   const pageIndex = segments.indexOf('pagina');
   const number = pageIndex >= 0 ? Number(segments[pageIndex + 1]) : 1;
-  const filtered = category === 'todas' ? photos : kind === 'gallery' ? photos.filter(p => p.category === category) : [];
+  let filtered = category === 'todas' ? photos : kind === 'gallery' ? photos.filter(p => p.category === category) : [];
+  if (kind === 'gallery' && curation[category]) {
+    const preferred = new Map(curation[category].map((id, index) => [id, index]));
+    filtered = [...filtered].sort((a, b) => {
+      const aRank = preferred.has(a.id) ? preferred.get(a.id) : Number.MAX_SAFE_INTEGER;
+      const bRank = preferred.has(b.id) ? preferred.get(b.id) : Number.MAX_SAFE_INTEGER;
+      return aRank - bRank;
+    });
+  }
   const offset = (number - 1) * 24;
   if (!Number.isSafeInteger(number) || number < 1 || (kind === 'gallery' && offset >= filtered.length)) throw new Error('Not found');
   const needsEditorialPhotos = ['home', 'packages', 'package', 'experience', 'photobooks'].includes(kind);
-  const compactSite = { ...site, initial: needsEditorialPhotos ? site.initial.slice(0,12) : [], collections: site.collections.map(c => ({ ...c, initial: [] })) };
+  const compactSite = { ...site, initial: needsEditorialPhotos ? site.initial.slice(0,12) : [], collections: site.collections.map(c => ({ ...c, initial: needsEditorialPhotos ? c.initial : [] })) };
   return { site: compactSite, kind, category, packageSlug, items: filtered.slice(offset, offset + 24), total: filtered.length, offset };
 }
 export function serializePage(page) { return JSON.stringify(page).replaceAll('<', '\\u003c'); }

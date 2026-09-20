@@ -13,12 +13,18 @@ export function formatPrice(price: number) {
 }
 
 function weddingPhoto(site: SiteData, index: number) {
-  const weddingPhotos = site.initial.filter((photo) => photo.category === "bodas");
+  const weddingPhotos = site.collections.find((collection) => collection.slug === "bodas")?.initial
+    || site.initial.filter((photo) => photo.category === "bodas");
   return weddingPhotos[index % weddingPhotos.length] || site.hero;
 }
 
+function collectionPhoto(site: SiteData, slug: string, index: number) {
+  const photos = site.collections.find((collection) => collection.slug === slug)?.initial || [];
+  return photos[index % photos.length];
+}
+
 export function StoryRail({ photos }: { photos: Photo[] }) {
-  const selected = photos.slice(3, 8);
+  const selected = photos.slice(0, 5);
   if (!selected.length) return null;
   return <section className="story-rail" aria-label="Una secuencia de historias">
     <div className="story-rail__heading section-pad">
@@ -36,7 +42,7 @@ export function StoryRail({ photos }: { photos: Photo[] }) {
 }
 
 export function PackageCard({ item, photo, index }: { item: PackageInfo; photo: Photo; index: number }) {
-  return <article className={`package-card package-card--${(index % 3) + 1} ${item.featured ? "package-card--featured" : ""}`}>
+  return <a aria-label={`Ver paquete ${item.name}`} className={`package-card package-card--${(index % 3) + 1} ${item.featured ? "package-card--featured" : ""}`} href={`/paquetes/${item.slug}`}>
     <div className="package-card__media" data-reveal="clip">
       <PhotoImage photo={photo} sizes="(max-width: 720px) 100vw, 42vw" />
       <span>{item.number} / 06</span>
@@ -50,30 +56,31 @@ export function PackageCard({ item, photo, index }: { item: PackageInfo; photo: 
         <div><dt>Cobertura</dt><dd>{item.comparison.coverage}</dd></div>
         <div><dt>Video</dt><dd>{item.comparison.video}</dd></div>
       </dl>
-      <a href={`/paquetes/${item.slug}`}>Ver paquete completo <ArrowUpRight size={16} /></a>
+      <span className="package-card__link">Ver paquete completo <ArrowUpRight size={16} /></span>
     </div>
-  </article>;
+  </a>;
 }
 
 function PackageShowcase({ site }: { site: SiteData }) {
   const [activeIndex, setActiveIndex] = useState(3);
   const activePackage = packages[activeIndex];
-  const photos = packages.map((_, index) => weddingPhoto(site, index + 8));
+  const photos = [2, 6, 8, 18, 19, 20].map((index) => weddingPhoto(site, index));
 
-  return <div className="package-showcase" data-reveal="clip">
-    <div className="package-showcase__visual">
+  return <div className="package-showcase">
+    <div className="package-showcase__visual" data-reveal="clip">
       {photos.map((photo, index) => <div className={`package-showcase__photo ${activeIndex === index ? "is-active" : ""}`} aria-hidden={activeIndex !== index} key={photo.id}>
         <PhotoImage photo={photo} priority={index === 3} sizes="(max-width: 900px) 100vw, 48vw" />
       </div>)}
-      <div className="package-showcase__caption"><span>{activePackage.number} / 06</span><strong>{activePackage.focus}</strong></div>
+      <div className="package-showcase__caption"><span>Selección del portafolio</span><strong>El estilo fotográfico se mantiene en cada cobertura.</strong></div>
     </div>
-    <div className="package-showcase__content">
-      <div className="package-showcase__selector" aria-label="Explorar los seis paquetes">
-        {packages.map((item, index) => <button type="button" aria-pressed={activeIndex === index} className={activeIndex === index ? "is-active" : ""} onClick={() => setActiveIndex(index)} onFocus={() => setActiveIndex(index)} onMouseEnter={() => setActiveIndex(index)} key={item.slug}>
-          <span>{item.number}</span><span><strong>{item.name}</strong><small>{item.focus}</small></span><b>{formatPrice(item.price)}</b><i aria-hidden="true" />
-        </button>)}
-      </div>
+    <div className="package-showcase__content" data-reveal="up">
+      <nav className="package-showcase__selector" aria-label="Abrir uno de los seis paquetes">
+        {packages.map((item, index) => <a href={`/paquetes/${item.slug}`} aria-current={activeIndex === index ? "true" : undefined} className={`package-showcase__option ${activeIndex === index ? "is-active" : ""}`} onFocus={() => setActiveIndex(index)} onMouseEnter={() => setActiveIndex(index)} key={item.slug}>
+          <span>{item.number}</span><span><strong>{item.name}</strong><small>{item.focus}</small></span><b>{formatPrice(item.price)}</b><ArrowUpRight aria-hidden="true" size={16} />
+        </a>)}
+      </nav>
       <div className="package-showcase__detail" aria-live="polite">
+        <div className="package-showcase__detail-heading"><span>{activePackage.number} / 06</span><div><h3>{activePackage.name}</h3><strong>{formatPrice(activePackage.price)}</strong></div></div>
         <p>{activePackage.bestFor}</p>
         <dl>
           <div><dt>Cobertura</dt><dd>{activePackage.comparison.coverage}</dd></div>
@@ -118,17 +125,25 @@ function CollectionShowcase({ site }: { site: SiteData }) {
 }
 
 export function HomePage({ site }: { site: SiteData }) {
+  const storyPhotos = [
+    collectionPhoto(site, "bodas", 1),
+    collectionPhoto(site, "xv-anos", 5),
+    collectionPhoto(site, "retratos", 1),
+    collectionPhoto(site, "bodas", 4),
+    collectionPhoto(site, "xv-anos", 6),
+  ].filter(Boolean) as Photo[];
   return <>
     <section className="hero" id="inicio">
       <div className="hero__copy">
-        <p className="eyebrow">Fotografía por Rodrigo Vargas</p>
-        <MotionText as="h1" text="Lo extraordinario vive en un instante." accentFrom={2} breakAfter={1} />
+        <p className="eyebrow">Bodas · XV años · Retratos</p>
+        <MotionText as="h1" text="Vuelve a sentirlo, toda la vida." accentFrom={3} breakAfter={2} />
         <div className="hero__copy-bottom">
-          <p>Fotografía para celebrar, recordar y volver a sentir.</p>
+          <p>Fotografía y video por Rodrigo Vargas para conservar tu historia con verdad, luz y emoción.</p>
           <div className="hero__actions">
-            <a className="button button--dark" href="#contacto">Consultar disponibilidad <ArrowUpRight size={17} /></a>
-            <a className="text-link" href="#portafolio">Explorar historias <ArrowDown size={16} /></a>
+            <a className="button button--dark" href="#contacto">Consultar mi fecha <ArrowUpRight size={17} /></a>
+            <a className="text-link" href="#portafolio">Ver el portafolio <ArrowDown size={16} /></a>
           </div>
+          <ul className="hero__services" aria-label="Servicios principales"><li><span>01</span>Bodas</li><li><span>02</span>XV años</li><li><span>03</span>Retratos</li></ul>
         </div>
       </div>
       <div className="hero__visual">
@@ -142,7 +157,7 @@ export function HomePage({ site }: { site: SiteData }) {
       <div><p className="statement__lead">Una buena fotografía observa el momento, lo entiende y lo conserva.</p><p className="statement__aside">Rodrigo Vargas, la mirada detrás de The Best Moment. Fotografía con atención a la luz, la expresión y los detalles.</p></div>
     </section>
 
-    <StoryRail photos={site.initial} />
+    <StoryRail photos={storyPhotos} />
 
     <section className="portfolio section-pad" id="portafolio">
       <div className="section-heading"><div><p className="section-index">02 / Portafolio</p><MotionText as="h2" text="Historias que permanecen." /></div><p>Bodas, XV años y retratos. Cada colección, una forma distinta de mirar.</p></div>
@@ -157,7 +172,7 @@ export function HomePage({ site }: { site: SiteData }) {
     </section>
 
     <section className="home-process section-pad">
-      <div className="home-process__visual" data-parallax><PhotoImage photo={weddingPhoto(site, 5)} sizes="(max-width: 720px) 100vw, 48vw" /></div>
+      <div className="home-process__visual" data-parallax><PhotoImage photo={weddingPhoto(site, 21)} sizes="(max-width: 720px) 100vw, 48vw" /></div>
       <div className="home-process__copy"><p className="section-index">04 / El día</p><MotionText as="h2" text="De los preparativos a la fiesta." /><p>Getting Ready, First Look, sesión de novios, ceremonia y celebración. Conoce cómo Rodrigo acompaña cada parte del día.</p><a className="text-link text-link--dark" href="/experiencia">Ver la experiencia completa <ArrowUpRight size={17} /></a></div>
     </section>
 
@@ -176,11 +191,12 @@ function EditorialHero({ eyebrow, title, text, photo }: { eyebrow: string; title
 }
 
 export function PackagesPage({ site }: { site: SiteData }) {
+  const cardPhotoIndexes = [1, 4, 7, 10, 13, 16];
   return <>
     <EditorialHero eyebrow="Paquetes 2026" title="Elige cómo quieres recordarlo." text="Compara las seis propuestas de fotografía, video y piezas impresas preparadas por The Best Moment." photo={weddingPhoto(site, 2)} />
     <section className="packages-index section-pad">
       <div className="section-heading"><div><p className="section-index">01 / Todas las propuestas</p><MotionText as="h2" text="Seis formas de conservar el día." /></div><p>Los precios y entregables corresponden al catálogo 2026 proporcionado por The Best Moment.</p></div>
-      <div className="package-grid package-grid--editorial package-grid--light">{packages.map((item, index) => <PackageCard item={item} photo={weddingPhoto(site, index + 14)} index={index} key={item.slug} />)}</div>
+      <div className="package-grid package-grid--editorial package-grid--light">{packages.map((item, index) => <PackageCard item={item} photo={weddingPhoto(site, cardPhotoIndexes[index])} index={index} key={item.slug} />)}</div>
     </section>
     <section className="package-guide section-pad"><div><p className="section-index">02 / Guía rápida</p><MotionText as="h2" text="¿Qué cambia entre paquetes?" /></div><div className="package-guide__items"><article><Clock3 /><span>De seis horas al día completo</span><h3>Cobertura</h3><strong>El tiempo y los capítulos que quieres conservar.</strong><p>Básico especifica seis horas; Elite 1 y Elite 2 recorren más momentos del día.</p></article><article><Film /><span>Película + resumen</span><h3>Video</h3><strong>80 o 90 minutos, con Flash Back desde Oro.</strong><p>Todos incluyen video Full HD; Oro y Elite suman un resumen breve del evento.</p></article><article><BookOpen /><span>Del papel al photobook</span><h3>Impresos</h3><strong>Cinco formatos editoriales y distintas ampliaciones.</strong><p>Bronce, Plata, Oro y Elite incluyen photobook, además de ampliaciones y minibook según la propuesta.</p></article><article><Camera /><span>De la sesión al primer encuentro</span><h3>Experiencia</h3><strong>Sesión, drone, Getting Ready y First Look.</strong><p>Cada paquete incorpora momentos distintos para acompañar la manera en que quieres vivir el día.</p></article></div></section>
     <PackageComparison />

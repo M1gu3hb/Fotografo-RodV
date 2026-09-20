@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState, type FormEvent } from "react";
-import { ArrowUpRight, Menu, X } from "lucide-react";
+import { useEffect, useId, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
+import { ArrowUpRight, Check, ChevronDown, Menu, X } from "lucide-react";
 
 import type { PageData } from "./Gallery";
 import { useScrollReveals } from "./Motion";
@@ -37,16 +37,135 @@ function Brand({ compact = false }: { compact?: boolean }) {
   </a>;
 }
 
+type SelectOption = { value: string; label: string; detail?: string };
+
+function DesignedSelect({
+  label,
+  name,
+  value,
+  options,
+  placeholder,
+  error,
+  onChange,
+}: {
+  label: string;
+  name: string;
+  value: string;
+  options: SelectOption[];
+  placeholder: string;
+  error?: string;
+  onChange: (value: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const root = useRef<HTMLDivElement>(null);
+  const trigger = useRef<HTMLButtonElement>(null);
+  const optionRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const labelId = useId();
+  const valueId = useId();
+  const listId = useId();
+  const errorId = useId();
+  const selected = options.find((option) => option.value === value);
+
+  useEffect(() => {
+    if (!open) return;
+    const closeOutside = (event: PointerEvent) => {
+      if (!root.current?.contains(event.target as Node)) setOpen(false);
+    };
+    document.addEventListener("pointerdown", closeOutside);
+    return () => document.removeEventListener("pointerdown", closeOutside);
+  }, [open]);
+
+  const focusOption = (index: number) => {
+    optionRefs.current[Math.max(0, Math.min(options.length - 1, index))]?.focus();
+  };
+  const openWithKeyboard = (event: KeyboardEvent<HTMLButtonElement>) => {
+    if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
+    event.preventDefault();
+    setOpen(true);
+    requestAnimationFrame(() => focusOption(event.key === "ArrowDown" ? 0 : options.length - 1));
+  };
+  const navigateOptions = (event: KeyboardEvent<HTMLButtonElement>, index: number) => {
+    if (event.key === "Escape") {
+      event.preventDefault();
+      setOpen(false);
+      trigger.current?.focus();
+    }
+    if (event.key === "ArrowDown" || event.key === "ArrowUp" || event.key === "Home" || event.key === "End") {
+      event.preventDefault();
+      const next = event.key === "Home" ? 0 : event.key === "End" ? options.length - 1 : index + (event.key === "ArrowDown" ? 1 : -1);
+      focusOption(next);
+    }
+  };
+  const choose = (nextValue: string) => {
+    onChange(nextValue);
+    setOpen(false);
+    trigger.current?.focus();
+  };
+
+  return <div className={`designed-field ${error ? "designed-field--error" : ""}`}>
+    <span className="designed-field__label" id={labelId}>{label}</span>
+    <div className="designed-select" ref={root}>
+      <input type="hidden" name={name} value={value} />
+      <button
+        aria-controls={listId}
+        aria-describedby={error ? errorId : undefined}
+        aria-expanded={open}
+        aria-haspopup="listbox"
+        aria-invalid={Boolean(error)}
+        aria-labelledby={`${labelId} ${valueId}`}
+        className="designed-select__trigger"
+        onClick={() => setOpen((current) => !current)}
+        onKeyDown={openWithKeyboard}
+        ref={trigger}
+        type="button"
+      >
+        <span id={valueId}><strong>{selected?.label || placeholder}</strong>{selected?.detail && <small>{selected.detail}</small>}</span>
+        <ChevronDown aria-hidden="true" size={19} />
+      </button>
+      {open && <div className="designed-select__menu" id={listId} role="listbox" aria-labelledby={labelId}>
+        {options.map((option, index) => <button
+          aria-selected={option.value === value}
+          className={option.value === value ? "is-selected" : ""}
+          key={option.value || "empty"}
+          onClick={() => choose(option.value)}
+          onKeyDown={(event) => navigateOptions(event, index)}
+          ref={(element) => { optionRefs.current[index] = element; }}
+          role="option"
+          type="button"
+        >
+          <span><strong>{option.label}</strong>{option.detail && <small>{option.detail}</small>}</span>
+          <Check aria-hidden="true" size={17} />
+        </button>)}
+      </div>}
+    </div>
+    {error && <small className="designed-field__error" id={errorId} role="alert">{error}</small>}
+  </div>;
+}
+
+const eventOptions: SelectOption[] = [
+  { value: "Boda", label: "Boda", detail: "Ceremonia, sesión y celebración" },
+  { value: "XV años", label: "XV años", detail: "Sesión, ceremonia y fiesta" },
+  { value: "Retrato", label: "Retrato", detail: "Personal, familiar o editorial" },
+  { value: "Otro tipo de evento", label: "Otro tipo de evento", detail: "Cuéntanos qué estás planeando" },
+];
+
 function ContactSection({ packageSlug }: { packageSlug: string | null }) {
   const selectedPackage = packages.find((item) => item.slug === packageSlug)?.slug || "";
+  const [selectedEvent, setSelectedEvent] = useState("");
+  const [packageValue, setPackageValue] = useState(selectedPackage);
+  const [eventError, setEventError] = useState("");
   const handleWhatsApp = (submitEvent: FormEvent<HTMLFormElement>) => {
     submitEvent.preventDefault();
     if (!contact.whatsapp) return;
+    if (!selectedEvent) {
+      setEventError("Selecciona el tipo de evento para continuar.");
+      return;
+    }
     const fields = new FormData(submitEvent.currentTarget);
     const name = String(fields.get("name") || "").trim();
     const date = String(fields.get("date") || "").trim();
-    const event = String(fields.get("event") || "").trim();
-    const packageValue = String(fields.get("package") || "").trim();
+    const customEvent = String(fields.get("eventOther") || "").trim();
+    const event = selectedEvent === "Otro tipo de evento" ? customEvent : selectedEvent;
     const details = String(fields.get("details") || "").trim();
     const chosenPackage = packages.find((item) => item.slug === packageValue)?.name || "aún por definir";
     const message = [
@@ -68,9 +187,10 @@ function ContactSection({ packageSlug }: { packageSlug: string | null }) {
           <label><span>Fecha del evento</span><input name="date" type="date" /></label>
         </div>
         <div className="form-row">
-          <label><span>Tipo de evento</span><select name="event" defaultValue="" required><option value="" disabled>Selecciona una opción</option><option>Boda</option><option>XV años</option><option>Retrato u otro</option></select></label>
-          <label><span>Paquete de interés</span><select name="package" defaultValue={selectedPackage}><option value="">Aún no lo sé</option>{packages.map((item) => <option value={item.slug} key={item.slug}>{item.name} · {formatPrice(item.price)}</option>)}</select></label>
+          <DesignedSelect label="Tipo de evento" name="event" value={selectedEvent} placeholder="Selecciona una opción" options={eventOptions} error={eventError} onChange={(value) => { setSelectedEvent(value); setEventError(""); }} />
+          <DesignedSelect label="Paquete de interés" name="package" value={packageValue} placeholder="Aún no lo sé" options={[{ value: "", label: "Aún no lo sé", detail: "Rodrigo puede orientarte" }, ...packages.map((item) => ({ value: item.slug, label: item.name, detail: formatPrice(item.price) }))]} onChange={setPackageValue} />
         </div>
+        {selectedEvent === "Otro tipo de evento" && <label className="contact-form__other"><span>¿Qué tipo de evento es?</span><input name="eventOther" placeholder="Graduación, aniversario, bautizo…" required /></label>}
         <label><span>Cuéntale un poco más</span><textarea name="details" rows={3} placeholder="Lugar, ceremonia o cualquier detalle que ya tengas en mente." /></label>
         <button className="button button--light" type="submit">Preparar mensaje en WhatsApp <ArrowUpRight size={17} /></button>
         <p className="form-note">Al continuar se abrirá WhatsApp con tu mensaje listo para revisar y enviar.</p>

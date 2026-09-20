@@ -25,6 +25,7 @@ El build prerenderiza la portada, el índice de paquetes, las seis páginas de p
 - `src/data/packages.json`: contenido de los seis paquetes 2026.
 - `src/config/contact.json`: teléfono y WhatsApp proporcionados en el catálogo.
 - `data/gallery.json`: catálogo completo para prerender y función de Vercel.
+- `data/curation.json`: orden editorial revisado de las fotografías destacadas por colección.
 - `api/gallery.mjs`: paginación y filtros, máximo 48 resultados por petición.
 - `public/photos`: derivados WebP sin metadatos ni ampliación artificial.
 - `scripts/prerender.mjs`: rutas, metadatos, sitemap y datos estructurados.
@@ -70,8 +71,8 @@ Vercel aloja el frontend, funciones y recursos estáticos. Supabase aporta el ca
 
 ## Verificación de esta entrega
 
-- 18 pruebas automatizadas de rutas, paquetes, navegación, formulario de WhatsApp, SEO, API, movimiento, portafolio y RLS.
-- Build de cliente de 71,26 kB gzip de JavaScript y prerender de 79 rutas.
+- 23 pruebas automatizadas de rutas, paquetes, navegación, formulario de WhatsApp, SEO, API, movimiento, portafolio, curaduría y RLS.
+- Build de cliente de 74,54 kB gzip de JavaScript y prerender de 79 rutas.
 - Revisión en teléfono y escritorio: navegación, secuencia vertical, páginas internas, paquetes, fotolibros, carga progresiva y movimiento reducido.
 - Metadatos únicos, canónicos, Open Graph, sitemap, `ProfessionalService`, `BreadcrumbList` y `Service` para paquetes.
 - 807 filas verificadas en Supabase, con permisos públicos de sólo lectura.
