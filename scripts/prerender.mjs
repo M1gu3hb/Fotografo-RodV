@@ -49,7 +49,7 @@ function metadata(path, data) {
   };
   return {
     title: 'The Best Moment | Fotografía por Rodrigo Vargas',
-    description: 'Fotografía de bodas, XV años y retratos por Rodrigo Vargas. Explora el portafolio y los paquetes 2026.',
+    description: 'Fotografía y video por Rodrigo Vargas para bodas, XV años, retratos y todo tipo de celebraciones. Explora el portafolio y los paquetes 2026.',
     crumbs: [],
   };
 }

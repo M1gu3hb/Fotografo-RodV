@@ -26,8 +26,10 @@ test('home package explorer links every option directly and reveals as one stabl
 
 test('hero states the service and emotional benefit clearly', () => {
   const pages = readFileSync('src/SitePages.tsx', 'utf8');
-  assert.match(pages, /Vuelve a sentirlo, toda la vida\./);
-  assert.match(pages, /Bodas · XV años · Retratos/);
+  assert.match(pages, /Tu historia, viva en cada imagen\./);
+  assert.match(pages, /Fotografía y video · Rodrigo Vargas/);
+  assert.match(pages, /Cada celebración/);
+  assert.match(pages, /function HeroIntro/);
 });
 
 
