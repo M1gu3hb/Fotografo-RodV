@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { ArrowDown, ArrowUpRight, BookOpen, Camera, Check, ChevronRight, Clock3, Film } from "lucide-react";
 
 import Gallery, { PhotoImage, type PageData, type Photo, type SiteData } from "./Gallery";
@@ -34,17 +35,74 @@ export function StoryRail({ photos }: { photos: Photo[] }) {
   </section>;
 }
 
-export function PackageCard({ item, compact = false }: { item: PackageInfo; compact?: boolean }) {
-  return <article className={`package-card ${item.featured ? "package-card--featured" : ""} ${compact ? "package-card--compact" : ""}`}>
-    <div className="package-card__number"><span>{item.number}</span>{item.featured && <span>Selección destacada</span>}</div>
-    <h3>{item.name}</h3>
-    <p>{item.summary}</p>
-    <strong>{formatPrice(item.price)}</strong>
-    {!compact && <ul>
-      {item.features.slice(0, 4).map((feature) => <li key={feature}><Check size={15} />{feature}</li>)}
-    </ul>}
-    <a href={`/paquetes/${item.slug}`}>Ver paquete completo <ArrowUpRight size={16} /></a>
+export function PackageCard({ item, photo, index }: { item: PackageInfo; photo: Photo; index: number }) {
+  return <article className={`package-card package-card--${(index % 3) + 1} ${item.featured ? "package-card--featured" : ""}`}>
+    <div className="package-card__media" data-reveal="clip">
+      <PhotoImage photo={photo} sizes="(max-width: 720px) 100vw, 42vw" />
+      <span>{item.number} / 06</span>
+    </div>
+    <div className="package-card__body">
+      <div className="package-card__number"><span>{item.focus}</span>{item.featured && <span>Selección destacada</span>}</div>
+      <h3>{item.name}</h3>
+      <p>{item.bestFor}</p>
+      <strong>{formatPrice(item.price)}</strong>
+      <dl className="package-card__facts">
+        <div><dt>Cobertura</dt><dd>{item.comparison.coverage}</dd></div>
+        <div><dt>Video</dt><dd>{item.comparison.video}</dd></div>
+      </dl>
+      <a href={`/paquetes/${item.slug}`}>Ver paquete completo <ArrowUpRight size={16} /></a>
+    </div>
   </article>;
+}
+
+function PackageShowcase({ site }: { site: SiteData }) {
+  const [activeIndex, setActiveIndex] = useState(3);
+  const activePackage = packages[activeIndex];
+  const photos = packages.map((_, index) => weddingPhoto(site, index + 8));
+
+  return <div className="package-showcase" data-reveal="clip">
+    <div className="package-showcase__visual">
+      {photos.map((photo, index) => <div className={`package-showcase__photo ${activeIndex === index ? "is-active" : ""}`} aria-hidden={activeIndex !== index} key={photo.id}>
+        <PhotoImage photo={photo} priority={index === 3} sizes="(max-width: 900px) 100vw, 48vw" />
+      </div>)}
+      <div className="package-showcase__caption"><span>{activePackage.number} / 06</span><strong>{activePackage.focus}</strong></div>
+    </div>
+    <div className="package-showcase__content">
+      <div className="package-showcase__selector" aria-label="Explorar los seis paquetes">
+        {packages.map((item, index) => <button type="button" aria-pressed={activeIndex === index} className={activeIndex === index ? "is-active" : ""} onClick={() => setActiveIndex(index)} onFocus={() => setActiveIndex(index)} onMouseEnter={() => setActiveIndex(index)} key={item.slug}>
+          <span>{item.number}</span><span><strong>{item.name}</strong><small>{item.focus}</small></span><b>{formatPrice(item.price)}</b><i aria-hidden="true" />
+        </button>)}
+      </div>
+      <div className="package-showcase__detail" aria-live="polite">
+        <p>{activePackage.bestFor}</p>
+        <dl>
+          <div><dt>Cobertura</dt><dd>{activePackage.comparison.coverage}</dd></div>
+          <div><dt>Video</dt><dd>{activePackage.comparison.video}</dd></div>
+          <div><dt>Impreso</dt><dd>{activePackage.comparison.print}</dd></div>
+          <div><dt>Experiencia</dt><dd>{activePackage.comparison.experience}</dd></div>
+        </dl>
+        <a className="button button--light" href={`/paquetes/${activePackage.slug}`}>Conocer {activePackage.name} <ArrowUpRight size={17} /></a>
+      </div>
+    </div>
+  </div>;
+}
+
+function PackageComparison() {
+  return <section className="package-comparison section-pad">
+    <div className="section-heading"><div><p className="section-index">03 / Comparación clara</p><MotionText as="h2" text="Lo que cambia, a primera vista." /></div><p>Cada propuesta conserva una historia completa a su escala. Aquí puedes identificar la diferencia real en cobertura, video, impresos y experiencia.</p></div>
+    <div className="package-comparison__labels" aria-hidden="true"><span>Paquete</span><span>Cobertura</span><span>Video</span><span>Impreso</span><span>Experiencia</span></div>
+    <div className="package-comparison__rows">
+      {packages.map((item) => <article key={item.slug}>
+        <header><span>{item.number}</span><div><h3>{item.name}</h3><small>{formatPrice(item.price)}</small></div><a href={`/paquetes/${item.slug}`} aria-label={`Ver paquete ${item.name}`}><ArrowUpRight size={18} /></a></header>
+        <dl>
+          <div><dt>Cobertura</dt><dd>{item.comparison.coverage}</dd></div>
+          <div><dt>Video</dt><dd>{item.comparison.video}</dd></div>
+          <div><dt>Impreso</dt><dd>{item.comparison.print}</dd></div>
+          <div><dt>Experiencia</dt><dd>{item.comparison.experience}</dd></div>
+        </dl>
+      </article>)}
+    </div>
+  </section>;
 }
 
 function CollectionShowcase({ site }: { site: SiteData }) {
@@ -94,7 +152,7 @@ export function HomePage({ site }: { site: SiteData }) {
 
     <section className="packages-preview section-pad" id="paquetes">
       <div className="section-heading section-heading--light"><div><p className="section-index">03 / Paquetes 2026</p><MotionText as="h2" text="Una cobertura para cada historia." /></div><p>Seis propuestas con fotografía, video y opciones impresas. Consulta el detalle completo antes de elegir.</p></div>
-      <div className="package-grid">{packages.map((item) => <PackageCard item={item} key={item.slug} />)}</div>
+      <PackageShowcase site={site} />
       <div className="section-cta"><a className="button button--light" href="/paquetes">Comparar todos los paquetes <ArrowUpRight size={17} /></a></div>
     </section>
 
@@ -122,9 +180,10 @@ export function PackagesPage({ site }: { site: SiteData }) {
     <EditorialHero eyebrow="Paquetes 2026" title="Elige cómo quieres recordarlo." text="Compara las seis propuestas de fotografía, video y piezas impresas preparadas por The Best Moment." photo={weddingPhoto(site, 2)} />
     <section className="packages-index section-pad">
       <div className="section-heading"><div><p className="section-index">01 / Todas las propuestas</p><MotionText as="h2" text="Seis formas de conservar el día." /></div><p>Los precios y entregables corresponden al catálogo 2026 proporcionado por The Best Moment.</p></div>
-      <div className="package-grid package-grid--light">{packages.map((item) => <PackageCard item={item} key={item.slug} />)}</div>
+      <div className="package-grid package-grid--editorial package-grid--light">{packages.map((item, index) => <PackageCard item={item} photo={weddingPhoto(site, index + 14)} index={index} key={item.slug} />)}</div>
     </section>
-    <section className="package-guide section-pad"><div><p className="section-index">02 / Guía rápida</p><MotionText as="h2" text="¿Qué cambia entre paquetes?" /></div><div className="package-guide__items"><article><Clock3 /><h3>Cobertura</h3><p>Básico especifica seis horas; Elite 1 y Elite 2 están pensados para recorrer el día y sus distintos momentos.</p></article><article><Film /><h3>Video</h3><p>Todos incluyen video Full HD. Desde Oro se suma un Flash Back de aproximadamente ocho minutos.</p></article><article><BookOpen /><h3>Impresos</h3><p>Bronce, Plata, Oro y Elite incluyen photobook, ampliaciones y distintas opciones de minibook.</p></article><article><Camera /><h3>Sesiones</h3><p>Las propuestas crecen desde sesión previa o estudio hasta sesión de novios, Getting Ready y First Look.</p></article></div></section>
+    <section className="package-guide section-pad"><div><p className="section-index">02 / Guía rápida</p><MotionText as="h2" text="¿Qué cambia entre paquetes?" /></div><div className="package-guide__items"><article><Clock3 /><span>De seis horas al día completo</span><h3>Cobertura</h3><strong>El tiempo y los capítulos que quieres conservar.</strong><p>Básico especifica seis horas; Elite 1 y Elite 2 recorren más momentos del día.</p></article><article><Film /><span>Película + resumen</span><h3>Video</h3><strong>80 o 90 minutos, con Flash Back desde Oro.</strong><p>Todos incluyen video Full HD; Oro y Elite suman un resumen breve del evento.</p></article><article><BookOpen /><span>Del papel al photobook</span><h3>Impresos</h3><strong>Cinco formatos editoriales y distintas ampliaciones.</strong><p>Bronce, Plata, Oro y Elite incluyen photobook, además de ampliaciones y minibook según la propuesta.</p></article><article><Camera /><span>De la sesión al primer encuentro</span><h3>Experiencia</h3><strong>Sesión, drone, Getting Ready y First Look.</strong><p>Cada paquete incorpora momentos distintos para acompañar la manera en que quieres vivir el día.</p></article></div></section>
+    <PackageComparison />
   </>;
 }
 
@@ -132,8 +191,8 @@ export function PackageDetailPage({ site, packageSlug }: { site: SiteData; packa
   const item = packages.find((entry) => entry.slug === packageSlug)!;
   const index = packages.findIndex((entry) => entry.slug === packageSlug);
   const photo = weddingPhoto(site, index + 1);
-  const previous = packages[(index - 1 + packages.length) % packages.length];
-  const next = packages[(index + 1) % packages.length];
+  const previous = index > 0 ? packages[index - 1] : null;
+  const next = index < packages.length - 1 ? packages[index + 1] : null;
   return <>
     <section className="package-hero">
       <div className="package-hero__copy"><a className="text-link" href="/paquetes">← Todos los paquetes</a><p className="eyebrow">Paquete {item.number} / 2026</p><MotionText as="h1" text={item.name} /><p>{item.description}</p><strong>{formatPrice(item.price)}</strong><a className="button button--dark" href="#contacto">Consultar este paquete <ArrowUpRight size={17} /></a></div>
@@ -143,7 +202,10 @@ export function PackageDetailPage({ site, packageSlug }: { site: SiteData; packa
       <div className="package-includes__heading"><p className="section-index">01 / Incluye</p><MotionText as="h2" text="Todo lo que forma parte de la propuesta." /><p>{item.summary}</p></div>
       <ol>{item.features.map((feature, featureIndex) => <li key={feature}><span>{String(featureIndex + 1).padStart(2, "0")}</span><p>{feature}</p><Check size={18} /></li>)}</ol>
     </section>
-    <section className="package-next section-pad"><div><p className="section-index">02 / Sigue explorando</p><h2>Compara antes de elegir.</h2></div><nav aria-label="Otros paquetes"><a href={`/paquetes/${previous.slug}`}><span>Anterior</span><strong>{previous.name}</strong></a><a href={`/paquetes/${next.slug}`}><span>Siguiente</span><strong>{next.name}</strong></a></nav></section>
+    <section className="package-next section-pad"><div><p className="section-index">02 / Sigue explorando</p><h2>Compara antes de elegir.</h2></div><nav aria-label="Otros paquetes">
+      {previous ? <a href={`/paquetes/${previous.slug}`}><span>Anterior</span><strong>{previous.name}</strong></a> : <a href="/paquetes"><span>Vista general</span><strong>Todos los paquetes</strong></a>}
+      {next ? <a href={`/paquetes/${next.slug}`}><span>Siguiente</span><strong>{next.name}</strong></a> : <a href="/paquetes"><span>Vista general</span><strong>Todos los paquetes</strong></a>}
+    </nav></section>
   </>;
 }
 

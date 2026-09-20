@@ -18,8 +18,8 @@ El build prerenderiza la portada, el índice de paquetes, las seis páginas de p
 
 ## Estructura
 
-- `src/App.tsx`: navegación, menú móvil, contacto y estructura global.
-- `src/SitePages.tsx`: portada, paquetes, experiencia, fotolibros y archivo.
+- `src/App.tsx`: navegación, menú móvil, formulario que prepara la consulta de WhatsApp y estructura global.
+- `src/SitePages.tsx`: portada, selector fotográfico, comparación de paquetes, experiencia, fotolibros y archivo.
 - `src/Motion.tsx`: revelados de texto y parallax acotado, con movimiento reducido.
 - `src/Gallery.tsx`: galería paginada, carga progresiva y visor accesible.
 - `src/data/packages.json`: contenido de los seis paquetes 2026.
@@ -70,7 +70,7 @@ Vercel aloja el frontend, funciones y recursos estáticos. Supabase aporta el ca
 
 ## Verificación de esta entrega
 
-- 14 pruebas automatizadas de rutas, paquetes, SEO, API, movimiento, portafolio y RLS.
+- 18 pruebas automatizadas de rutas, paquetes, navegación, formulario de WhatsApp, SEO, API, movimiento, portafolio y RLS.
 - Build de cliente de 71,26 kB gzip de JavaScript y prerender de 79 rutas.
 - Revisión en teléfono y escritorio: navegación, secuencia vertical, páginas internas, paquetes, fotolibros, carga progresiva y movimiento reducido.
 - Metadatos únicos, canónicos, Open Graph, sitemap, `ProfessionalService`, `BreadcrumbList` y `Service` para paquetes.

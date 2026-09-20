@@ -6,6 +6,14 @@
     "price": 11500,
     "summary": "Seis horas de cobertura, entrega digital, impresiones y video Full HD.",
     "description": "Una cobertura concentrada en los momentos principales del evento, con fotografías impresas y una película completa para volver a vivirlo.",
+    "focus": "Cobertura esencial",
+    "bestFor": "Celebraciones compactas que quieren conservar fotografía, impresiones y una película completa.",
+    "comparison": {
+      "coverage": "6 horas",
+      "video": "80 min · Full HD",
+      "print": "100 impresiones 5 × 7",
+      "experience": "Entrega digital"
+    },
     "features": [
       "6 horas de cobertura",
       "Archivos por transferencia digital",
@@ -21,6 +29,14 @@
     "price": 13500,
     "summary": "Fotolibro, ampliaciones, sesión y video para una boda con una ceremonia.",
     "description": "El paquete ideal para una boda con una sola ceremonia y para conservar los mejores recuerdos del gran día.",
+    "focus": "El álbum entra en escena",
+    "bestFor": "Una ceremonia con sesión, photobook y ampliaciones para llevar la historia al papel.",
+    "comparison": {
+      "coverage": "Una ceremonia + sesión",
+      "video": "80 min · Full HD",
+      "print": "Photobook 8 × 20 · 10 hojas",
+      "experience": "Sesión previa o estudio"
+    },
     "features": [
       "Video Full HD de 80 minutos, entregado en USB",
       "Photobook de 8 × 20 pulgadas con 10 hojas",
@@ -38,6 +54,14 @@
     "price": 16500,
     "summary": "Video extendido, photobook, minibook, ampliaciones y sesión previa.",
     "description": "Una propuesta más amplia que suma un photobook de mayor formato, minibook de estudio y video de 90 minutos.",
+    "focus": "Una entrega editorial",
+    "bestFor": "Quienes quieren una película más extensa, photobook de mayor formato y minibook.",
+    "comparison": {
+      "coverage": "Evento + sesión",
+      "video": "90 min · Full HD",
+      "print": "Photobook 10 × 20 · 10 hojas",
+      "experience": "Sesión previa + minibook"
+    },
     "features": [
       "Video Full HD de 90 minutos, entregado en USB",
       "Photobook de 10 × 20 pulgadas con 10 hojas",
@@ -56,6 +80,14 @@
     "price": 18500,
     "summary": "Photobook de 12 hojas, Flash Back, drone, minibook y ampliaciones.",
     "description": "Una cobertura que incorpora tomas de referencia con drone, una película completa y un resumen Flash Back del evento.",
+    "focus": "Perspectiva y ritmo",
+    "bestFor": "Una historia con tomas de referencia desde drone y un resumen breve para volver a compartirla.",
+    "comparison": {
+      "coverage": "Evento + sesión",
+      "video": "80 min + Flash Back",
+      "print": "Photobook 12 × 20 · 12 hojas",
+      "experience": "Drone + sesión + minibook"
+    },
     "featured": true,
     "features": [
       "Video Full HD de 80 minutos, entregado en USB",
@@ -77,6 +109,14 @@
     "price": 22000,
     "summary": "Cobertura amplia con sesión casual, sesión de novios, drone y piezas impresas.",
     "description": "Pensado para cubrir una boda durante todo el día, desde la ceremonia religiosa o civil hasta la fiesta, incluyendo traslados, sorpresas y momentos especiales.",
+    "focus": "El día como relato",
+    "bestFor": "Parejas que quieren recorrer la ceremonia, los traslados, las sesiones y la fiesta como una sola narración.",
+    "comparison": {
+      "coverage": "Boda durante todo el día",
+      "video": "90 min + Flash Back",
+      "print": "Photobook 10 × 25 · 12 hojas",
+      "experience": "Drone + sesión casual + novios"
+    },
     "features": [
       "Video Full HD de 90 minutos, entregado en USB",
       "Flash Back del evento de aproximadamente 8 minutos",
@@ -98,6 +138,14 @@
     "price": 26000,
     "summary": "La cobertura más completa: Getting Ready, First Look, sesiones, drone y photobook.",
     "description": "La experiencia integral para narrar el día desde los preparativos y el primer encuentro hasta la última parte de la celebración.",
+    "focus": "Cada capítulo del día",
+    "bestFor": "Quienes quieren conservar la historia desde los preparativos y el First Look hasta la celebración.",
+    "comparison": {
+      "coverage": "Historia completa",
+      "video": "90 min + Flash Back",
+      "print": "Photobook 12 × 24 · 15 hojas",
+      "experience": "Getting Ready + First Look"
+    },
     "features": [
       "Video Full HD de 90 minutos, entregado en USB",
       "Flash Back del evento de aproximadamente 8 minutos",
