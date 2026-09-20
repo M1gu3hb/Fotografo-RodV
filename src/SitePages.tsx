@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { ArrowDown, ArrowUpRight, BookOpen, Camera, Check, ChevronRight, Clock3, Film } from "lucide-react";
+import { startTransition, useCallback, useEffect, useRef, useState } from "react";
+import { ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, BookOpen, Camera, Check, ChevronRight, Clock3, Film } from "lucide-react";
 
 import Gallery, { PhotoImage, type PageData, type Photo, type SiteData } from "./Gallery";
 import { MotionText } from "./Motion";
@@ -23,6 +23,140 @@ function collectionPhoto(site: SiteData, slug: string, index: number) {
   return photos[index % photos.length];
 }
 
+function uniquePhotos(photos: Array<Photo | undefined>) {
+  const seen = new Set<string>();
+  return photos.filter((photo): photo is Photo => {
+    if (!photo || seen.has(photo.id)) return false;
+    seen.add(photo.id);
+    return true;
+  });
+}
+
+type CyclePhase = "steady" | "blurring" | "revealing";
+
+function usePhotoCycle(length: number, delay: number, initialIndex = 0) {
+  const [index, setIndex] = useState(() => length ? initialIndex % length : 0);
+  const [phase, setPhase] = useState<CyclePhase>("revealing");
+  const [visible, setVisible] = useState(true);
+  const [reducedMotion, setReducedMotion] = useState(false);
+  const root = useRef<HTMLDivElement>(null);
+  const cycleTimer = useRef<number | null>(null);
+  const swapTimer = useRef<number | null>(null);
+
+  const clearTimers = useCallback(() => {
+    if (cycleTimer.current !== null) window.clearTimeout(cycleTimer.current);
+    if (swapTimer.current !== null) window.clearTimeout(swapTimer.current);
+    cycleTimer.current = null;
+    swapTimer.current = null;
+  }, []);
+
+  const choose = useCallback((nextIndex: number) => {
+    if (length < 1) return;
+    clearTimers();
+    const normalized = (nextIndex + length) % length;
+    if (reducedMotion) {
+      setIndex(normalized);
+      setPhase("steady");
+      return;
+    }
+    setPhase("blurring");
+    swapTimer.current = window.setTimeout(() => {
+      startTransition(() => setIndex(normalized));
+      setPhase("revealing");
+    }, 620);
+  }, [clearTimers, length, reducedMotion]);
+
+  useEffect(() => {
+    const query = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setReducedMotion(query.matches);
+    update();
+    query.addEventListener("change", update);
+    return () => query.removeEventListener("change", update);
+  }, []);
+
+  useEffect(() => {
+    const element = root.current;
+    if (!element || !("IntersectionObserver" in window)) return;
+    const observer = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting), { rootMargin: "20% 0px" });
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (delay <= 0 || length < 2 || !visible || reducedMotion) return;
+    cycleTimer.current = window.setTimeout(() => choose(index + 1), delay);
+    return () => {
+      if (cycleTimer.current !== null) window.clearTimeout(cycleTimer.current);
+      cycleTimer.current = null;
+    };
+  }, [choose, delay, index, length, reducedMotion, visible]);
+
+  useEffect(() => {
+    if (phase !== "revealing") return;
+    const timer = window.setTimeout(() => setPhase("steady"), 760);
+    return () => window.clearTimeout(timer);
+  }, [phase]);
+
+  useEffect(() => clearTimers, [clearTimers]);
+
+  return { choose, index, phase, root };
+}
+
+function useNextPhotoPreload(photos: Photo[], index: number) {
+  useEffect(() => {
+    if (photos.length < 2) return;
+    const next = photos[(index + 1) % photos.length];
+    const version = next.versions[Math.min(1, next.versions.length - 1)];
+    const preload = new Image();
+    preload.src = version.src;
+  }, [index, photos]);
+}
+
+function CycleVisual({ photo, phase, priority = false, sizes }: { photo: Photo; phase: CyclePhase; priority?: boolean; sizes: string }) {
+  return <div className={`photo-cycle__visual is-${phase}`}>
+    <div className="photo-cycle__frame"><PhotoImage key={photo.id} photo={photo} priority={priority} sizes={sizes} /></div>
+    <span className="photo-cycle__flash" aria-hidden="true" />
+  </div>;
+}
+
+function CyclingPhoto({ photos, delay, initialIndex = 0, priority = false, sizes, className = "" }: { photos: Photo[]; delay: number; initialIndex?: number; priority?: boolean; sizes: string; className?: string }) {
+  const cycle = usePhotoCycle(photos.length, delay, initialIndex);
+  useNextPhotoPreload(photos, cycle.index);
+  if (!photos.length) return null;
+  const photo = photos[cycle.index] || photos[0];
+  return <div className={`photo-cycle ${className}`} ref={cycle.root} style={{ aspectRatio: `${photos[0].width} / ${photos[0].height}` }}>
+    <CycleVisual photo={photo} phase={cycle.phase} priority={priority && cycle.index === initialIndex} sizes={sizes} />
+  </div>;
+}
+
+function MobileStorySequence({ photos }: { photos: Photo[] }) {
+  const selected = photos.slice(0, 5);
+  const cycle = usePhotoCycle(selected.length, 3500);
+  const touchX = useRef<number | null>(null);
+  useNextPhotoPreload(selected, cycle.index);
+  if (!selected.length) return null;
+  const photo = selected[cycle.index] || selected[0];
+  const category = photo.category === "xv-anos" ? "XV años" : photo.category === "bodas" ? "Boda" : "Retrato";
+  return <div className="story-rail__mobile" ref={cycle.root}>
+    <figure className="story-rail__mobile-stage"
+      onTouchStart={(event) => { touchX.current = event.touches[0].clientX; }}
+      onTouchEnd={(event) => {
+        if (touchX.current === null) return;
+        const distance = event.changedTouches[0].clientX - touchX.current;
+        if (Math.abs(distance) > 45) cycle.choose(cycle.index + (distance < 0 ? 1 : -1));
+        touchX.current = null;
+      }}>
+      <CycleVisual photo={photo} phase={cycle.phase} priority sizes="100vw" />
+      <figcaption><span>{String(cycle.index + 1).padStart(2, "0")} / 05</span><strong>{category}</strong><small>Desliza para recorrer</small></figcaption>
+    </figure>
+    <div className="story-rail__mobile-controls" role="group" aria-label="Recorrer la secuencia fotográfica">
+      <button type="button" onClick={() => cycle.choose(cycle.index - 1)} aria-label="Fotografía anterior"><ArrowLeft size={18} /></button>
+      <div>{selected.map((item, index) => <button type="button" className={cycle.index === index ? "is-active" : ""} onClick={() => cycle.choose(index)} aria-label={`Ver fotografía ${index + 1}`} aria-current={cycle.index === index ? "true" : undefined} key={item.id} />)}</div>
+      <button type="button" onClick={() => cycle.choose(cycle.index + 1)} aria-label="Fotografía siguiente"><ArrowRight size={18} /></button>
+    </div>
+  </div>;
+}
+
 export function StoryRail({ photos }: { photos: Photo[] }) {
   const selected = photos.slice(0, 5);
   if (!selected.length) return null;
@@ -38,6 +172,7 @@ export function StoryRail({ photos }: { photos: Photo[] }) {
         <figcaption><span>0{index + 1}</span><span>The Best Moment</span></figcaption>
       </figure>)}
     </div>
+    <MobileStorySequence photos={selected} />
   </section>;
 }
 
@@ -65,6 +200,10 @@ function PackageShowcase({ site }: { site: SiteData }) {
   const [activeIndex, setActiveIndex] = useState(3);
   const activePackage = packages[activeIndex];
   const photos = [2, 6, 8, 18, 19, 20].map((index) => weddingPhoto(site, index));
+  const mobileCycle = usePhotoCycle(packages.length, 0, 3);
+  const mobilePackage = packages[mobileCycle.index];
+  const touchX = useRef<number | null>(null);
+  useNextPhotoPreload(photos, mobileCycle.index);
 
   return <div className="package-showcase">
     <div className="package-showcase__visual" data-reveal="clip">
@@ -91,14 +230,46 @@ function PackageShowcase({ site }: { site: SiteData }) {
         <a className="button button--light" href={`/paquetes/${activePackage.slug}`}>Conocer {activePackage.name} <ArrowUpRight size={17} /></a>
       </div>
     </div>
+    <div className="package-showcase__mobile" ref={mobileCycle.root}
+      onTouchStart={(event) => { touchX.current = event.touches[0].clientX; }}
+      onTouchEnd={(event) => {
+        if (touchX.current === null) return;
+        const distance = event.changedTouches[0].clientX - touchX.current;
+        if (Math.abs(distance) > 45) mobileCycle.choose(mobileCycle.index + (distance < 0 ? 1 : -1));
+        touchX.current = null;
+      }}>
+      <div className="package-mobile__media">
+        <CycleVisual photo={photos[mobileCycle.index]} phase={mobileCycle.phase} sizes="100vw" />
+        <span>{mobilePackage.number} / 06 · {mobilePackage.focus}</span>
+      </div>
+      <div className="package-mobile__body" aria-live="polite">
+        <div className="package-mobile__heading"><div><span>Paquete {mobilePackage.number}</span><h3>{mobilePackage.name}</h3></div><strong>{formatPrice(mobilePackage.price)}</strong></div>
+        <p>{mobilePackage.bestFor}</p>
+        <dl>
+          <div><dt>Cobertura</dt><dd>{mobilePackage.comparison.coverage}</dd></div>
+          <div><dt>Video</dt><dd>{mobilePackage.comparison.video}</dd></div>
+          <div><dt>Impreso</dt><dd>{mobilePackage.comparison.print}</dd></div>
+          <div><dt>Experiencia</dt><dd>{mobilePackage.comparison.experience}</dd></div>
+        </dl>
+        <a className="button button--light" href={`/paquetes/${mobilePackage.slug}`}>Ver {mobilePackage.name} completo <ArrowUpRight size={17} /></a>
+      </div>
+      <div className="package-mobile__controls">
+        <button type="button" onClick={() => mobileCycle.choose(mobileCycle.index - 1)} aria-label="Paquete anterior"><ArrowLeft size={18} /></button>
+        <div role="group" aria-label="Elegir paquete">{packages.map((item, index) => <button type="button" aria-label={`Ver paquete ${item.name}`} aria-pressed={mobileCycle.index === index} className={mobileCycle.index === index ? "is-active" : ""} onClick={() => mobileCycle.choose(index)} key={item.slug}>{item.number}</button>)}</div>
+        <button type="button" onClick={() => mobileCycle.choose(mobileCycle.index + 1)} aria-label="Paquete siguiente"><ArrowRight size={18} /></button>
+      </div>
+      <p className="package-mobile__hint">Desliza o toca un número para comparar.</p>
+    </div>
   </div>;
 }
 
 function PackageComparison() {
+  const [open, setOpen] = useState(false);
   return <section className="package-comparison section-pad">
     <div className="section-heading"><div><p className="section-index">03 / Comparación clara</p><MotionText as="h2" text="Lo que cambia, a primera vista." /></div><p>Cada propuesta conserva una historia completa a su escala. Aquí puedes identificar la diferencia real en cobertura, video, impresos y experiencia.</p></div>
+    <button className="package-comparison__toggle" type="button" aria-expanded={open} aria-controls="package-comparison-rows" onClick={() => setOpen((current) => !current)}>{open ? "Cerrar comparación" : "Abrir comparación detallada"}<ChevronRight size={18} /></button>
     <div className="package-comparison__labels" aria-hidden="true"><span>Paquete</span><span>Cobertura</span><span>Video</span><span>Impreso</span><span>Experiencia</span></div>
-    <div className="package-comparison__rows">
+    <div className={`package-comparison__rows ${open ? "is-open" : ""}`} id="package-comparison-rows">
       {packages.map((item) => <article key={item.slug}>
         <header><span>{item.number}</span><div><h3>{item.name}</h3><small>{formatPrice(item.price)}</small></div><a href={`/paquetes/${item.slug}`} aria-label={`Ver paquete ${item.name}`}><ArrowUpRight size={18} /></a></header>
         <dl>
@@ -115,7 +286,7 @@ function PackageComparison() {
 function CollectionShowcase({ site }: { site: SiteData }) {
   return <nav className="collection-showcase" aria-label="Colecciones fotográficas">
     {site.collections.map((collection, index) => <a className={`collection-showcase__item collection-showcase__item--${index + 1}`} href={`/colecciones/${collection.slug}`} key={collection.slug} data-parallax>
-      <div className="collection-showcase__image"><PhotoImage photo={collection.cover} sizes="(max-width: 720px) 100vw, 52vw" /></div>
+      <div className="collection-showcase__image"><CyclingPhoto photos={uniquePhotos([collection.cover, ...collection.initial.slice(0, 7)])} delay={3000 + index * 320} sizes="(max-width: 720px) 100vw, 52vw" /></div>
       <div className="collection__veil" />
       <div className="collection-showcase__meta">
         <span>0{index + 1}</span><h3>{collection.title}</h3><span>{collection.total} fotografías</span><ChevronRight size={22} />
@@ -132,6 +303,14 @@ export function HomePage({ site }: { site: SiteData }) {
     collectionPhoto(site, "bodas", 4),
     collectionPhoto(site, "xv-anos", 6),
   ].filter(Boolean) as Photo[];
+  const heroPhotos = uniquePhotos([
+    site.hero,
+    collectionPhoto(site, "xv-anos", 0),
+    collectionPhoto(site, "retratos", 0),
+    collectionPhoto(site, "bodas", 2),
+    collectionPhoto(site, "xv-anos", 3),
+    collectionPhoto(site, "retratos", 2),
+  ]);
   return <>
     <section className="hero" id="inicio">
       <div className="hero__copy">
@@ -147,7 +326,7 @@ export function HomePage({ site }: { site: SiteData }) {
         </div>
       </div>
       <div className="hero__visual">
-        <PhotoImage photo={site.hero} priority sizes="(max-width: 1050px) 100vw, 50vw" />
+        <CyclingPhoto photos={heroPhotos} delay={4000} priority sizes="(max-width: 1050px) 100vw, 50vw" />
         <div className="hero__visual-label"><span>THE BEST MOMENT</span><span>RODRIGO VARGAS</span></div>
       </div>
     </section>

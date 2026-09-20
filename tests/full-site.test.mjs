@@ -35,12 +35,28 @@ test('desktop photo reveal holds the blur, expands a central flash and respects 
 });
 
 
-test('the mobile story is a vertical scroll sequence with no hidden horizontal gesture', () => {
+test('the mobile story uses one visible photo sequence with explicit controls', () => {
+  const pages = readFileSync('src/SitePages.tsx', 'utf8');
   const css = readFileSync('src/portfolio.css', 'utf8');
-  const mobile = css.slice(css.indexOf('@media(max-width:720px)'));
-  assert.match(mobile, /\.story-rail__track\{[^}]*display:grid/);
-  assert.doesNotMatch(mobile, /\.story-rail__track\{[^}]*overflow-x:auto/);
+  const mobile = css.slice(css.lastIndexOf('@media(max-width:720px)'));
+  assert.match(pages, /function MobileStorySequence/);
+  assert.match(pages, /aria-label="Recorrer la secuencia fotográfica"/);
+  assert.match(mobile, /\.story-rail__track\{display:none/);
+  assert.match(mobile, /\.story-rail__mobile\{display:block/);
   assert.doesNotMatch(mobile, /scroll-snap-type:x/);
+});
+
+
+test('mobile pages expose touch controls, sticky portfolio filters and optional package details', () => {
+  const pages = readFileSync('src/SitePages.tsx', 'utf8');
+  const css = readFileSync('src/portfolio.css', 'utf8');
+  const mobile = css.slice(css.lastIndexOf('@media(max-width:720px)'));
+  assert.match(pages, /aria-label={`Ver paquete \$\{item\.name\}`}/);
+  assert.match(pages, /aria-pressed={mobileCycle\.index === index}/);
+  assert.match(pages, /Abrir comparación detallada/);
+  assert.match(mobile, /\.collection-page \.filters\{position:sticky/);
+  assert.match(mobile, /\.package-comparison__rows:not\(\.is-open\)\{display:none/);
+  assert.match(mobile, /\.scroll-chapter,\.scroll-chapter:nth-child\(even\)\{position:sticky/);
 });
 
 
