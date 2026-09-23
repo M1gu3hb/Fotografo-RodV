@@ -30,6 +30,18 @@ test('hero states the service and emotional benefit clearly', () => {
   assert.match(pages, /Fotografía y video · Rodrigo Vargas/);
   assert.match(pages, /Cada celebración/);
   assert.match(pages, /function HeroIntro/);
+  assert.match(pages, /desktopHeroPhotos/);
+  assert.match(pages, /function ResponsiveCyclingPhoto/);
+  assert.match(pages, /media="\(min-width: 721px\)"/);
+});
+
+
+test('desktop home presentation is photographic, compact and interactive', () => {
+  const css = readFileSync('src/portfolio.css', 'utf8');
+  assert.match(css, /Desktop home refinement/);
+  assert.match(css, /\.hero__copy,\.hero__visual\{grid-area:1\/1\}/);
+  assert.match(css, /\.story-rail__item:hover/);
+  assert.match(css, /\.collection-showcase\{[^}]*grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/);
 });
 
 

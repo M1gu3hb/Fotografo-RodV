@@ -1,4 +1,4 @@
-import { startTransition, useCallback, useEffect, useRef, useState } from "react";
+import { startTransition, useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
 import { ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, BookOpen, Camera, Check, ChevronRight, Clock3, Film } from "lucide-react";
 
 import Gallery, { PhotoImage, type PageData, type Photo, type SiteData } from "./Gallery";
@@ -119,13 +119,55 @@ function CycleVisual({ photo, phase, priority = false, sizes }: { photo: Photo; 
   </div>;
 }
 
-function CyclingPhoto({ photos, delay, initialIndex = 0, priority = false, sizes, className = "" }: { photos: Photo[]; delay: number; initialIndex?: number; priority?: boolean; sizes: string; className?: string }) {
-  const cycle = usePhotoCycle(photos.length, delay, initialIndex);
-  useNextPhotoPreload(photos, cycle.index);
-  if (!photos.length) return null;
-  const photo = photos[cycle.index] || photos[0];
-  return <div className={`photo-cycle ${className}`} ref={cycle.root} style={{ aspectRatio: `${photos[0].width} / ${photos[0].height}` }}>
-    <CycleVisual photo={photo} phase={cycle.phase} priority={priority && cycle.index === initialIndex} sizes={sizes} />
+function ResponsiveCyclingPhoto({ mobilePhotos, desktopPhotos, delay, priority = false }: { mobilePhotos: Photo[]; desktopPhotos: Photo[]; delay: number; priority?: boolean }) {
+  const length = Math.min(mobilePhotos.length, desktopPhotos.length);
+  const cycle = usePhotoCycle(length, delay);
+  const mobilePhoto = mobilePhotos[cycle.index] || mobilePhotos[0];
+  const desktopPhoto = desktopPhotos[cycle.index] || desktopPhotos[0];
+  const image = useRef<HTMLImageElement>(null);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    setLoaded(false);
+    if (image.current?.complete && image.current.naturalWidth > 0) setLoaded(true);
+  }, [cycle.index]);
+
+  useEffect(() => {
+    if (length < 2) return;
+    const photos = window.matchMedia("(min-width: 721px)").matches ? desktopPhotos : mobilePhotos;
+    const next = photos[(cycle.index + 1) % length];
+    const version = next.versions[Math.min(1, next.versions.length - 1)];
+    const preload = new Image();
+    preload.src = version.src;
+  }, [cycle.index, desktopPhotos, length, mobilePhotos]);
+
+  if (!mobilePhoto || !desktopPhoto) return null;
+  const mobileVersions = mobilePhoto.versions;
+  const desktopVersions = desktopPhoto.versions;
+  const style = {
+    aspectRatio: `${mobilePhoto.width} / ${mobilePhoto.height}`,
+    "--placeholder": mobilePhoto.placeholder ? `url("${mobilePhoto.placeholder}")` : "none",
+    "--placeholder-desktop": desktopPhoto.placeholder ? `url("${desktopPhoto.placeholder}")` : "none",
+  } as CSSProperties;
+
+  return <div className="photo-cycle photo-cycle--responsive" ref={cycle.root}>
+    <div className={`photo-cycle__visual is-${cycle.phase}`}>
+      <div className="photo-cycle__frame">
+        <span className={`photo-frame responsive-photo-frame ${loaded ? "is-loaded" : ""}`} style={style}>
+          <span className="photo-frame__placeholder" aria-hidden="true" />
+          <picture className="responsive-photo-frame__picture">
+            <source media="(min-width: 721px)" srcSet={desktopVersions.map((version) => `${version.src} ${version.width}w`).join(", ")} sizes="100vw" />
+            <img ref={image} className="photo-frame__image"
+              src={mobileVersions[Math.min(1, mobileVersions.length - 1)].src}
+              srcSet={mobileVersions.map((version) => `${version.src} ${version.width}w`).join(", ")} sizes="100vw"
+              alt={mobilePhoto.alt} width={mobilePhoto.width} height={mobilePhoto.height}
+              onLoad={() => setLoaded(true)} loading={priority && cycle.index === 0 ? "eager" : "lazy"}
+              fetchPriority={priority && cycle.index === 0 ? "high" : "auto"} decoding={priority && cycle.index === 0 ? "sync" : "async"} />
+          </picture>
+        </span>
+      </div>
+      <span className="photo-cycle__flash" aria-hidden="true" />
+    </div>
   </div>;
 }
 
@@ -362,6 +404,14 @@ export function HomePage({ site }: { site: SiteData }) {
     collectionPhoto(site, "xv-anos", 3),
     collectionPhoto(site, "retratos", 2),
   ]);
+  const desktopHeroPhotos = uniquePhotos([
+    collectionPhoto(site, "bodas", 1),
+    collectionPhoto(site, "bodas", 3),
+    collectionPhoto(site, "bodas", 6),
+    collectionPhoto(site, "bodas", 7),
+    collectionPhoto(site, "bodas", 8),
+    collectionPhoto(site, "retratos", 1),
+  ]);
   return <>
     <section className={`hero ${introActive ? "is-intro-active" : "is-intro-complete"}`} id="inicio">
       {introActive && <HeroIntro photos={heroPhotos} onComplete={completeIntro} />}
@@ -378,7 +428,7 @@ export function HomePage({ site }: { site: SiteData }) {
         </div>
       </div>
       <div className="hero__visual">
-        <CyclingPhoto key={introActive ? "hero-preload" : "hero-ready"} photos={heroPhotos} delay={4000} priority sizes="(max-width: 1050px) 100vw, 50vw" />
+        <ResponsiveCyclingPhoto key={introActive ? "hero-preload" : "hero-ready"} mobilePhotos={heroPhotos} desktopPhotos={desktopHeroPhotos} delay={4000} priority />
         <div className="hero__visual-label"><span>THE BEST MOMENT</span><span>RODRIGO VARGAS</span></div>
       </div>
     </section>

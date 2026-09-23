@@ -437,6 +437,8 @@ a:focus-visible,button:focus-visible{outline:3px solid #5678b9;outline-offset:5p
 .photo-cycle__visual.is-revealing .photo-cycle__flash{animation:cycle-flash .76s cubic-bezier(.16,.72,.22,1) both}
 @keyframes cycle-flash{0%{opacity:0;transform:scale(.025)}16%{opacity:1}48%{opacity:.82}100%{opacity:0;transform:scale(1.75)}}
 .hero__visual>.photo-cycle{height:100%;aspect-ratio:auto!important}
+.responsive-photo-frame__picture{grid-area:1/1;display:block;width:100%;height:100%}
+.responsive-photo-frame__picture .photo-frame__image{display:block;width:100%;height:100%}
 .collection-showcase__image>.photo-cycle{width:100%}
 .story-rail__mobile,.package-showcase__mobile,.package-comparison__toggle{display:none}
 
@@ -670,4 +672,83 @@ a:focus-visible,button:focus-visible{outline:3px solid #5678b9;outline-offset:5p
  .hero-intro,.hero-intro::before,.hero-intro::after,.hero-intro *,.hero.is-intro-complete .hero__copy,.hero.is-intro-complete .hero__visual,.story-reel__track,.package-mobile__gesture svg,.package-mobile__arrow svg,.package-mobile__choices button.is-active>span{animation:none!important;transition:none!important}
  .story-reel__set[aria-hidden="true"],.story-reel__set .story-reel__frame:nth-child(n+2){display:none}
  .story-reel__frame{width:calc(100vw - 2.4rem);flex-basis:calc(100vw - 2.4rem)}
+}
+
+/* Desktop home refinement: one cinematic canvas instead of a divided page. */
+@media(min-width:721px){
+ .hero{position:relative;display:grid;grid-template-columns:1fr;min-height:max(720px,calc(100svh - 82px));overflow:hidden;border-bottom:0;background:#111113;color:#fff;isolation:isolate}
+ .hero__copy,.hero__visual{grid-area:1/1}
+ .responsive-photo-frame .photo-frame__placeholder{background-image:var(--placeholder-desktop)}
+ .hero__visual{z-index:0;min-height:max(720px,calc(100svh - 82px));align-self:stretch;background:#171719}
+ .hero__visual::after{z-index:2;background:linear-gradient(90deg,rgba(10,10,12,.9) 0%,rgba(10,10,12,.76) 25%,rgba(10,10,12,.28) 53%,rgba(10,10,12,.02) 76%),linear-gradient(180deg,rgba(8,8,10,.18) 0%,transparent 42%,rgba(8,8,10,.72) 100%)}
+ .hero__visual img{width:100%;height:100%;max-height:none;object-fit:cover;object-position:center 38%;filter:saturate(.92) contrast(1.04)}
+ .hero__copy{position:relative;z-index:3;display:grid;width:100%;min-height:max(720px,calc(100svh - 82px));grid-template-columns:repeat(12,minmax(0,1fr));grid-template-rows:auto 1fr auto;gap:1.5rem;padding:clamp(2.25rem,4vw,4.75rem) clamp(2rem,4.5vw,5.5rem) clamp(2rem,3.6vw,4rem);pointer-events:none}
+ .hero__copy::before{content:"";position:absolute;top:clamp(2rem,4vw,4.5rem);bottom:clamp(2rem,3.6vw,4rem);left:clamp(1rem,2.1vw,2.7rem);width:1px;background:linear-gradient(180deg,rgba(255,255,255,.7),rgba(255,255,255,.08) 70%,rgba(255,255,255,.42))}
+ .hero__copy>.eyebrow{grid-column:1/7;margin:0;color:rgba(255,255,255,.72);font-size:.62rem;text-shadow:0 1px 18px rgba(0,0,0,.8)}
+ .hero h1{grid-column:1/8;align-self:center;max-width:8.8ch;margin:0;color:#fff;font-size:clamp(5.2rem,7.1vw,8.7rem);line-height:.82;letter-spacing:-.06em;text-shadow:0 4px 42px rgba(0,0,0,.46)}
+ .hero h1 span,.hero h1 .motion-word{max-width:none;color:inherit}
+ .hero__copy-bottom{grid-column:1/-1;align-self:end;display:grid;grid-template-columns:minmax(230px,340px) minmax(190px,260px) minmax(420px,1fr);align-items:end;gap:clamp(1.5rem,3vw,4rem);pointer-events:auto}
+ .hero__copy-bottom>p{max-width:21rem;margin:0;color:rgba(255,255,255,.76);font-size:.88rem;line-height:1.7;text-shadow:0 1px 18px rgba(0,0,0,.72)}
+ .hero__actions{display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-end;gap:1rem;margin:0}
+ .hero__actions .button--dark{background:#fff;color:#111113;border-color:#fff}
+ .hero__actions .button--dark:hover{background:transparent;color:#fff}
+ .hero__actions .text-link{color:#fff;font-size:.68rem}
+ .hero__services{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin:0;padding:0;border-top:1px solid rgba(255,255,255,.34);border-bottom:1px solid rgba(255,255,255,.18);background:rgba(10,10,12,.14);backdrop-filter:blur(7px)}
+ .hero__services li{min-height:74px;gap:.5rem;padding:1rem .8rem;color:#fff;font-size:clamp(.95rem,1.2vw,1.25rem)}
+ .hero__services li+li{border-color:rgba(255,255,255,.25)}
+ .hero__services span{color:rgba(255,255,255,.58)}
+ .hero__visual-label{top:clamp(2.25rem,4vw,4.75rem);right:clamp(2rem,4.5vw,5.5rem);bottom:auto;left:auto;flex-direction:column;align-items:flex-end;gap:.5rem;color:rgba(255,255,255,.68);text-shadow:0 1px 18px rgba(0,0,0,.9)}
+
+ .story-rail__item{position:relative;transition:transform .55s cubic-bezier(.16,1,.3,1)}
+ .story-rail__item .photo-frame{transition:box-shadow .55s ease,filter .55s ease}
+ .story-rail__item .photo-frame__image{transition:transform .8s cubic-bezier(.16,1,.3,1),filter .55s ease}
+ .story-rail__item figcaption{transition:color .35s ease,transform .55s cubic-bezier(.16,1,.3,1)}
+}
+
+@media(hover:hover) and (min-width:721px){
+ .story-rail__item:hover{z-index:3;transform:translateY(calc(var(--parallax-shift,0px) - 18px))}
+ .story-rail__item:hover .photo-frame{box-shadow:0 26px 58px rgba(0,0,0,.42);filter:brightness(1.04)}
+ .story-rail__item:hover .photo-frame__image{transform:scale(1.045)}
+ .story-rail__item:hover figcaption{color:#fff;transform:translateY(4px)}
+}
+
+@media(min-width:900px){
+ .portfolio .section-heading{margin-bottom:clamp(2.5rem,4vw,4.5rem)}
+ .collection-showcase{max-width:1500px;margin-inline:auto;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(1.2rem,2.2vw,2.6rem);align-items:start}
+ .collection-showcase__item--1,.collection-showcase__item--2,.collection-showcase__item--3{grid-column:auto;margin-top:0}
+ .collection-showcase__item--2{margin-top:clamp(2rem,3.5vw,3.75rem)}
+ .collection-showcase__item--3{margin-top:clamp(.8rem,1.7vw,1.8rem)}
+ .collection-showcase__image,.collection-showcase__image>.photo-cycle{height:clamp(390px,32vw,555px);aspect-ratio:auto!important}
+ .collection-showcase__image .photo-frame{height:100%;aspect-ratio:auto!important}
+ .collection-showcase__image .photo-frame__image{height:100%;object-fit:cover}
+ .collection-showcase__meta{grid-template-columns:auto 1fr auto;padding:.85rem 0}
+ .collection-showcase__meta>span:nth-of-type(2){display:none}
+ .collection-showcase__meta h3{font-size:clamp(2.35rem,3vw,3.7rem)}
+ .collection-showcase__meta svg{grid-column:3}
+}
+
+@media(min-width:721px) and (max-width:1050px){
+ .hero__copy{padding-inline:2.25rem}
+ .hero h1{grid-column:1/10;font-size:clamp(4.7rem,9.4vw,6.3rem)}
+ .hero__copy-bottom{grid-template-columns:minmax(220px,1fr) minmax(190px,.8fr)}
+ .hero__services{grid-column:1/-1}
+ .hero__visual-label{right:2.25rem}
+}
+
+/* Mobile reel depth: slow breathing photographs and a passing light reflection. */
+@media(max-width:720px){
+ .story-reel__frame{box-shadow:0 18px 42px rgba(0,0,0,.28)}
+ .story-reel__frame .photo-frame{transform-origin:center;animation:story-reel-breathe 7.2s ease-in-out infinite alternate}
+ .story-reel__frame:nth-child(2n) .photo-frame{animation-delay:-2.4s;animation-direction:alternate-reverse}
+ .story-reel__frame:nth-child(3n) .photo-frame{animation-delay:-4.6s}
+ .story-reel__frame::before{content:"";position:absolute;z-index:2;inset:-20%;background:linear-gradient(108deg,transparent 36%,rgba(255,255,255,.2) 49%,transparent 62%);opacity:0;transform:translateX(-115%);mix-blend-mode:screen;pointer-events:none;animation:story-reel-light 7.8s ease-in-out infinite}
+ .story-reel__frame:nth-child(2n)::before{animation-delay:-3.9s}
+ .story-reel__frame figcaption strong{animation:story-reel-caption 4.8s ease-in-out infinite alternate}
+ @keyframes story-reel-breathe{0%{transform:scale(1.015) translate3d(-.6%,0,0)}100%{transform:scale(1.075) translate3d(.8%,-.7%,0)}}
+ @keyframes story-reel-light{0%,62%{opacity:0;transform:translateX(-115%)}72%{opacity:.72}88%,100%{opacity:0;transform:translateX(115%)}}
+ @keyframes story-reel-caption{from{opacity:.84;transform:translateY(2px)}to{opacity:1;transform:translateY(-2px)}}
+}
+
+@media(prefers-reduced-motion:reduce){
+ .story-reel__frame .photo-frame,.story-reel__frame::before,.story-reel__frame figcaption strong{animation:none!important;transform:none!important}
 }

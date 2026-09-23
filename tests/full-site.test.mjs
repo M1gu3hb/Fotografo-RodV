@@ -42,6 +42,8 @@ test('the mobile story presents an automatic side-to-side photographic reel', ()
   assert.match(pages, /Archivo en movimiento/);
   assert.match(css, /\.story-rail__track\{display:none/);
   assert.match(css, /\.story-reel__track\{[^}]*animation:story-reel-drift/);
+  assert.match(css, /@keyframes story-reel-breathe/);
+  assert.match(css, /@keyframes story-reel-light/);
   assert.doesNotMatch(css, /scroll-snap-type:x/);
 });
 
