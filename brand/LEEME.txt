@@ -1,0 +1,29 @@
+THE BEST MOMENT — BRAND DEFINITIVO
+
+Contenido
+
+1. logos/
+   - Símbolo, wordmark y composiciones horizontal y vertical.
+   - Versiones negras, blancas, PNG y SVG.
+   - the-best-moment-symbol-animated.gif:
+     formación del símbolo con el rombo central inclinado al cierre.
+   - the-best-moment-lockup-animated.gif:
+     formación del símbolo y aparición progresiva del wordmark completo.
+
+2. mockups/
+   - Aplicaciones de marca en fotolibro, caja, papelería, entrega digital,
+     correa y equipo fotográfico, y señalización de estudio.
+   - 00-mockup-collection.jpg reúne las cuatro aplicaciones.
+
+Uso rápido
+
+- Fondos claros: usar las versiones "black".
+- Fondos oscuros: usar las versiones "white".
+- Para impresión o producción: preferir los archivos SVG.
+- Para presentaciones y mensajería: usar PNG o GIF.
+- Mantener libre el espacio interior y exterior de las cuatro esquinas del símbolo.
+
+Alcance
+
+Esta carpeta contiene únicamente la identidad definitiva. Las propuestas
+anteriores y el archivo histórico local quedaron excluidos de la entrega.

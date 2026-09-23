@@ -2,6 +2,8 @@
 
 Sitio editorial multipágina en React, TypeScript y Vite. Producción: https://the-best-moment.vercel.app. Repositorio: `M1gu3hb/Fotografo-RodV`.
 
+Para retomar el trabajo en una sesión nueva, empezar por [`START_HERE.md`](START_HERE.md). El registro completo, la arquitectura, el mapa de archivos, la producción de la marca definitiva y la operación están en [`docs/`](docs/). La entrega final de identidad está en [`brand/`](brand/).
+
 ## Ejecutar y verificar
 
 ```powershell
@@ -71,8 +73,8 @@ Vercel aloja el frontend, funciones y recursos estáticos. Supabase aporta el ca
 
 ## Verificación de esta entrega
 
-- 23 pruebas automatizadas de rutas, paquetes, navegación, formulario de WhatsApp, SEO, API, movimiento, portafolio, curaduría y RLS.
-- Build de cliente de 74,54 kB gzip de JavaScript y prerender de 79 rutas.
+- 25 pruebas automatizadas de rutas, paquetes, navegación, formulario de WhatsApp, SEO, API, movimiento, portafolio, curaduría y RLS.
+- Build de cliente de 76,66 kB gzip de JavaScript y prerender de 79 rutas.
 - Revisión en teléfono y escritorio: navegación, secuencia vertical, páginas internas, paquetes, fotolibros, carga progresiva y movimiento reducido.
 - Metadatos únicos, canónicos, Open Graph, sitemap, `ProfessionalService`, `BreadcrumbList` y `Service` para paquetes.
 - 807 filas verificadas en Supabase, con permisos públicos de sólo lectura.
