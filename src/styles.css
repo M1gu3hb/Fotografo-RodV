@@ -104,39 +104,33 @@ img {
   display: inline-flex;
   width: max-content;
   align-items: center;
-  gap: 0.72rem;
 }
 
-.brand__mark {
-  width: 38px;
-  height: 38px;
-  fill: var(--ink);
-  stroke: var(--ink);
-  stroke-width: 1.25;
+.brand__motion {
+  position: relative;
+  width: 166px;
+  height: 54px;
 }
 
-.brand__mark-cross {
-  opacity: 0.24;
+.brand__motion img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
-.brand__type {
-  display: grid;
-  line-height: 0.78;
+.brand__gif {
+  position: absolute;
+  inset: 0;
 }
 
-.brand__small {
-  margin-left: 0.15rem;
-  font-size: 0.56rem;
-  font-weight: 650;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
+.brand--playing .brand__static {
+  visibility: hidden;
 }
 
-.brand__large {
-  font-family: var(--serif);
-  font-size: 1.72rem;
-  font-weight: 540;
-  letter-spacing: -0.055em;
+.brand--compact .brand__motion {
+  width: 150px;
+  height: 48px;
 }
 
 .desktop-nav {
@@ -881,20 +875,6 @@ img {
   border-top: 1px solid rgba(255, 255, 255, 0.14);
   background: var(--ink);
   color: var(--paper);
-}
-
-.site-footer .brand__mark {
-  fill: var(--paper);
-  stroke: var(--paper);
-}
-
-.brand--compact .brand__mark {
-  width: 30px;
-  height: 30px;
-}
-
-.brand--compact .brand__large {
-  font-size: 1.35rem;
 }
 
 .site-footer p,

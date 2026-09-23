@@ -9,7 +9,7 @@ Este archivo es el punto de entrada para continuar el proyecto en otro chat o eq
 - Vercel: proyecto `the-best-moment`.
 - Supabase: proyecto compartido **Mis proyectos**, referencia `vuzyhbiwnnngeohysxcw`.
 - Backend aislado del fotógrafo: tabla `public.rodrigo_portfolio_photos`.
-- Identidad definitiva: `brand/`. Esta carpeta contiene los originales de entrega, dos GIF finales y mockups aprobados para presentar a Rodrigo.
+- Identidad actual: los PNG aprobados de `brand/logos/` y ocho propuestas GIF (cuatro horizontales y cuatro apiladas); la horizontal es la principal. Los mockups antiguos requieren revisión con la nueva wordmark.
 - El material de rebranding descartado y la antigua carpeta local `brand 0` no forman parte del repositorio ni deben recuperarse como propuesta vigente.
 
 ## Decisiones que deben conservarse

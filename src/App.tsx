@@ -25,14 +25,22 @@ const navItems = [
 ];
 
 function Brand({ compact = false }: { compact?: boolean }) {
-  return <a className={`brand ${compact ? "brand--compact" : ""}`} href="/" aria-label="The Best Moment, inicio">
+  const [take, setTake] = useState(0);
+  const [playing, setPlaying] = useState(!compact);
+  useEffect(() => {
+    if (!playing) return;
+    const timer = window.setTimeout(() => setPlaying(false), 3300);
+    return () => window.clearTimeout(timer);
+  }, [playing, take]);
+  const replay = () => {
+    if (compact || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    setTake((current) => current + 1);
+    setPlaying(true);
+  };
+  return <a className={`brand ${compact ? "brand--compact" : ""} ${playing ? "brand--playing" : ""}`} href="/" aria-label="The Best Moment, inicio" onPointerEnter={replay} onFocus={replay}>
     <span className="brand__motion">
-      <svg className="brand__mark" viewBox="0 0 48 48" aria-hidden="true">
-        <path d="M5 17V5h12M31 5h12v12M43 31v12H31M17 43H5V31" />
-        <path d="M15 24h18M24 15v18" className="brand__mark-cross" />
-        <rect x="21" y="21" width="6" height="6" transform="rotate(45 24 24)" />
-      </svg>
-      <span className="brand__type"><span className="brand__small">The best</span><span className="brand__large">Moment</span></span>
+      <img className="brand__static" src={compact ? "/brand/the-best-moment-horizontal-final-white.png" : "/brand/the-best-moment-horizontal-final-black.png"} alt="" width={2200} height={700} />
+      {!compact && playing && <img key={take} className="brand__gif" src="/brand/the-best-moment-horizontal-03-enfoque-fotografico.gif" alt="" width={1400} height={445} />}
     </span>
   </a>;
 }

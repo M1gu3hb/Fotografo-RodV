@@ -1,29 +1,33 @@
-THE BEST MOMENT — BRAND DEFINITIVO
+THE BEST MOMENT — IDENTIDAD APROBADA / ANIMACIONES EN REVISIÓN
 
 Contenido
 
 1. logos/
    - Símbolo, wordmark y composiciones horizontal y vertical.
-   - Versiones negras, blancas, PNG y SVG.
+   - Versiones negras y blancas en PNG transparente, con el lockup horizontal
+     como marca principal. El SVG vigente corresponde solo al símbolo.
    - the-best-moment-symbol-animated.gif:
      formación del símbolo con el rombo central inclinado al cierre.
-   - the-best-moment-lockup-animated.gif:
-     formación del símbolo y aparición progresiva del wordmark completo.
+   - Cuatro GIF horizontales y cuatro GIF apilados identificados 01 a 04:
+     propuestas en revisión; aún no se ha escogido la animación definitiva.
 
 2. mockups/
    - Aplicaciones de marca en fotolibro, caja, papelería, entrega digital,
      correa y equipo fotográfico, y señalización de estudio.
-   - 00-mockup-collection.jpg reúne las cuatro aplicaciones.
+   - Mockups conceptuales previos; requieren revisión con la nueva wordmark.
+     No se incluyen en el paquete de entrega actual.
 
 Uso rápido
 
 - Fondos claros: usar las versiones "black".
 - Fondos oscuros: usar las versiones "white".
-- Para impresión o producción: preferir los archivos SVG.
-- Para presentaciones y mensajería: usar PNG o GIF.
+- Para pantalla, presentaciones y mensajería: usar los PNG aprobados.
+- Para producción vectorial del lockup completo, solicitar trazados nuevos:
+  los SVG tipográficos antiguos se retiraron porque no representaban el PNG aprobado.
 - Mantener libre el espacio interior y exterior de las cuatro esquinas del símbolo.
 
 Alcance
 
-Esta carpeta contiene únicamente la identidad definitiva. Las propuestas
-anteriores y el archivo histórico local quedaron excluidos de la entrega.
+Los ocho GIFs conservan las cuatro opciones en ambos formatos para elegir.
+El símbolo estático y su GIF no se modificaron. La carpeta mockups/ conserva
+trabajo conceptual anterior, separado del paquete de entrega.

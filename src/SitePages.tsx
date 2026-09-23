@@ -344,8 +344,8 @@ function HeroIntro({ photos, onComplete }: { photos: Photo[]; onComplete: () => 
       const reducedTimer = window.setTimeout(onComplete, 240);
       return () => window.clearTimeout(reducedTimer);
     }
-    const leaveTimer = window.setTimeout(() => setLeaving(true), 1750);
-    const completeTimer = window.setTimeout(onComplete, 2720);
+    const leaveTimer = window.setTimeout(() => setLeaving(true), 4300);
+    const completeTimer = window.setTimeout(onComplete, 5270);
     return () => {
       window.clearTimeout(leaveTimer);
       window.clearTimeout(completeTimer);
@@ -354,8 +354,8 @@ function HeroIntro({ photos, onComplete }: { photos: Photo[]; onComplete: () => 
   return <div className={`hero-intro ${leaving ? "is-leaving" : ""}`} aria-hidden="true">
     <div className="hero-intro__shards">{photos.slice(0, 4).map((photo, index) => <span className={`hero-intro__shard hero-intro__shard--${index + 1}`} style={{ backgroundImage: `url("${photo.versions[Math.min(1, photo.versions.length - 1)].src}")` }} key={photo.id} />)}</div>
     <div className="hero-intro__brand">
-      <svg viewBox="0 0 48 48"><path d="M5 17V5h12M31 5h12v12M43 31v12H31M17 43H5V31" /><path d="M15 24h18M24 15v18" /><rect x="21" y="21" width="6" height="6" transform="rotate(45 24 24)" /></svg>
-      <span><small>The best</small><strong>Moment</strong></span>
+      <img className="hero-intro__animated" src="/brand/the-best-moment-horizontal-01-revelado-editorial.gif" alt="" width={1400} height={445} />
+      <img className="hero-intro__still" src="/brand/the-best-moment-horizontal-final-black.png" alt="" width={2200} height={700} />
     </div>
     <p>Fotografía · Rodrigo Vargas</p>
   </div>;

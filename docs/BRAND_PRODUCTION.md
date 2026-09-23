@@ -4,7 +4,7 @@
 
 La única marca vigente es la contenida en `brand/`. Su símbolo tiene cuatro esquinas abiertas de enfoque, líneas centrales en cruz y un rombo inclinado. El lockup horizontal coloca el símbolo a la izquierda, `THE BEST` arriba y `Moment` como palabra dominante. Hay versiones negras, blancas, horizontales, apiladas y separadas.
 
-Los SVG son los masters escalables. Los PNG sirven para entrega rápida y aplicaciones raster. Los GIF son piezas de presentación; no sustituyen los masters.
+Los PNG aprobados de septiembre de 2026 son la referencia visual vigente. El SVG del símbolo sigue vigente; los tres SVG con la antigua tipografía se retiraron hasta poder preparar trazados fieles al PNG aprobado. Los GIF son piezas de presentación y no sustituyen los originales estáticos.
 
 ## GIF 1: símbolo
 
@@ -27,23 +27,17 @@ Secuencia:
 
 La corrección decisiva respecto al borrador anterior fue el giro final del elemento central. El último fotograma debe conservar siempre el rombo, no un cuadrado recto.
 
-## GIF 2: símbolo y wordmark
+## Archivo histórico: animación anterior del lockup
 
-Archivo: `brand/logos/the-best-moment-lockup-animated.gif`
+El GIF antiguo `the-best-moment-lockup-animated.gif` se retiró tras aprobarse la nueva wordmark.
 
-- Lienzo: 1.600 × 700 px.
-- Fondo: transparente.
-- Duración total: 4.400 ms.
-- Fotogramas: 114.
-- Repetición: infinita.
-- Estado final: lockup horizontal completo.
+Las cuatro propuestas actuales se entregan en formatos horizontal y apilado en `brand/logos/`, enumeradas del 01 al 04. La horizontal es el logo principal. La 03 horizontal se reproduce al interactuar con la marca en el encabezado, y la 01 horizontal aparece en el splash. Aún falta elegir cuál de las cuatro animaciones será la definitiva de la marca.
 
 Secuencia:
 
-1. Se forma el símbolo con la misma lógica del GIF individual.
-2. `THE BEST` entra con un desplazamiento corto y se asienta sobre la palabra principal.
-3. `Moment` se construye de forma progresiva, letra por letra, manteniendo la métrica del lockup final.
-4. Todo el conjunto permanece quieto antes del reinicio.
+1. Se forma el símbolo usando los fotogramas del GIF individual.
+2. La wordmark se anima de cuatro maneras: revelado editorial, letras en secuencia, enfoque fotográfico y encuentro tipográfico.
+3. Todas terminan en el PNG aprobado de su respectivo lockup antes de salir.
 
 ## Método de producción
 
@@ -72,4 +66,4 @@ Los mockups fueron generados como escenas completas con la marca integrada en lo
 
 ## Paquete de entrega
 
-`brand/The-Best-Moment-Brand-Def.zip` contiene una copia portable de la marca definitiva. Cuando se modifique cualquier master, GIF o mockup, regenerar el ZIP para que coincida con el contenido visible de `brand/` y actualizar `brand/LEEME.txt`.
+`brand/The-Best-Moment-Brand-Def.zip` reúne los PNG aprobados, el símbolo vectorial y animado, las ocho propuestas GIF y esta guía. Los mockups conceptuales anteriores se conservan en el repositorio pero se excluyen de la entrega mientras se revisan con la nueva wordmark.

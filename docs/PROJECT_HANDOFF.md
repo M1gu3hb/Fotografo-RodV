@@ -54,12 +54,13 @@ No subir `.env.local`, tokens, claves de Supabase, credenciales de Vercel, origi
 
 La identidad aprobada para entrega está en `brand/`. El símbolo se compone de cuatro esquinas de enfoque, una cruz central y un rombo inclinado a 45 grados. El wordmark combina `THE BEST` en altas con `Moment` en serif.
 
-Hay dos GIF definitivos:
+El símbolo tiene un GIF vigente y existen ocho opciones animadas del lockup aprobado:
 
 - `brand/logos/the-best-moment-symbol-animated.gif`: animación del símbolo; el cuadrado central termina girando hasta convertirse en el rombo definitivo.
-- `brand/logos/the-best-moment-lockup-animated.gif`: formación del símbolo seguida por la aparición de `THE BEST` y construcción de `Moment`.
+- `brand/logos/the-best-moment-horizontal-01-*.gif` a `04-*.gif`: cuatro propuestas horizontales para elegir.
+- `brand/logos/the-best-moment-stacked-01-*.gif` a `04-*.gif`: sus cuatro equivalentes apilados.
 
-Los archivos SVG y PNG negros/blancos son los masters de uso. Los cuatro mockups finales muestran la marca integrada en fotolibro y caja, papelería y entrega, correa y estuche de cámara, y señalización de estudio. `brand/The-Best-Moment-Brand-Def.zip` reúne la entrega portable.
+Los PNG aprobados negros/blancos son la referencia visual del lockup. El SVG del símbolo permanece, y los SVG antiguos del lockup se retiraron porque su tipografía ya no coincidía. Los mockups antiguos se conservan como conceptos pendientes de actualización. `brand/The-Best-Moment-Brand-Def.zip` reúne los PNG y GIF vigentes.
 
 Las propuestas alternativas anteriores, sus GIF y los mockups antiguos se consideran descartados. No deben presentarse a Rodrigo como opciones vigentes.
 
